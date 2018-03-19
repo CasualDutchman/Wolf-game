@@ -1,0 +1,8 @@
+- MVP to main game (Wolf game)
+	- keep procedural terrain consistant (spawn same panel at same position)
+	- enemies
+	- resting area
+
+- Second MVP from other.
+	- look at enemies
+	- look at resting/outpost
