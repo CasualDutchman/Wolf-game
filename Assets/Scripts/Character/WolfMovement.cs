@@ -20,5 +20,7 @@ public class WolfMovement : MonoBehaviour {
         velocity = Vector3.ClampMagnitude(velocity, 1);
         velocity = Vector3.ClampMagnitude(velocity * Time.deltaTime * maxSpeed, maxSpeed);
         transform.position += velocity;
-	}
+
+        transform.rotation = Quaternion.LookRotation(velocity);
+    }
 }

@@ -54,10 +54,12 @@ public class Worldmanager : MonoBehaviour {
 
     void Start () {
         if (PlayerPrefs.HasKey("Thr")) {
-            useThread = PlayerPrefs.GetInt("Thr") == 0;
-            flatShading = PlayerPrefs.GetInt("Fla") == 0;
-            spawnType = PlayerPrefs.GetInt("Pro") == 0 ? SpawnType.Procedural : SpawnType.Panels;
+            //useThread = PlayerPrefs.GetInt("Thr") == 0;
+            //flatShading = PlayerPrefs.GetInt("Fla") == 0;
+            //spawnType = PlayerPrefs.GetInt("Pro") == 0 ? SpawnType.Procedural : SpawnType.Panels;
         }
+
+        spawnType = SpawnType.Panels;
 
         settingsText.text = spawnType.ToString() + (spawnType == SpawnType.Procedural ? " / " + (useThread ? "Threading" : "Main Thread") + " / " + (flatShading ? "Flat" : "Smooth") : "");
 
@@ -163,17 +165,12 @@ public class Worldmanager : MonoBehaviour {
     }
 
     GameObject SpawnTile(Vector2 v2) {
-        float seedMultiplier = rng.Next();
-        float posx = v2.x * seedMultiplier;
-        float posy = v2.y * seedMultiplier;
-        posx *= 0.01f;
-        posy *= 0.01f;
-
-        float random = Mathf.PerlinNoise(posx, posy);
-        int index = Mathf.FloorToInt(random * panels.Length);
-        print(index);
-
-        GameObject go = Instantiate(panels[Random.Range(0, panels.Length)], transform);
+        float perlin = Mathf.PerlinNoise(v2.x * 0.2f, v2.y * 0.2f);
+        int index = Mathf.FloorToInt(perlin * panels.Length);
+        //print(index);
+        //print(perlin * panels.Length);
+        //GameObject go = Instantiate(panels[Random.Range(0, panels.Length)], transform);
+        GameObject go = Instantiate(panels[index], transform);
         go.transform.position = new Vector3(v2.x * tileXY, 0, v2.y * tileXY);
 
         panelsToAdd.RemoveAt(0);
@@ -294,7 +291,7 @@ public class Chunk {
                     float height = 0;
                     height += Mathf.PerlinNoise((chunkX + x + (i * 10)) * 0.1f * other, (chunkY + y - (i * 5)) * 0.1f * other);
                     height *= multiplier;
-                    noisemap[x, y] += height * 0.4f;
+                    noisemap[x, y] += height * 0.2f;
                 }
             }
 

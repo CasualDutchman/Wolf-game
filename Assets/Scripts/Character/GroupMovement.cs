@@ -61,7 +61,7 @@ public class GroupMovement : MonoBehaviour {
 
             GameObject go = Instantiate(wolfPrefab, RelativePositionToWorld(i), Quaternion.identity);
             go.GetComponent<WolfMovement>().id = i;
-            go.GetComponent<WolfMovement>().maxSpeed = Random.Range(maxSpeed - 1f, maxSpeed + 1f);
+            go.GetComponent<WolfMovement>().maxSpeed = Random.Range(maxSpeed - 0.3f, maxSpeed + 0.3f);
 
             wolves[i] = go.transform;
 
