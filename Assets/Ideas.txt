@@ -1,0 +1,8 @@
+0- Dense inpassable trees - dense bushes
+1- Dense trees - bushes
+2- trees - bushes
+3- bushes - very minor trees
+4- bushes
+5- minor bushes - grass
+6- minor grass
+7- barren 

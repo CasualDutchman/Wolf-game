@@ -21,6 +21,17 @@ public class WolfMovement : MonoBehaviour {
         velocity = Vector3.ClampMagnitude(velocity * Time.deltaTime * maxSpeed, maxSpeed);
         transform.position += velocity;
 
-        transform.rotation = Quaternion.LookRotation(velocity);
+        Vector3 look = velocity;
+        look.y = 0;
+        transform.rotation = Quaternion.LookRotation(look);
+
+        Ray ray = new Ray(transform.position + (Vector3.up * 3), Vector3.down);
+        RaycastHit hit;
+
+        if (Physics.Raycast(ray, out hit, 10, LayerMask.GetMask("Water"))) {
+            Vector3 v3 = transform.position;
+            v3.y = hit.point.y;
+            transform.position = v3;
+        }
     }
 }

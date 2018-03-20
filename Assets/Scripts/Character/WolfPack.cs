@@ -57,16 +57,20 @@ public class WolfPack : MonoBehaviour {
 	}
 
     public void UpdateTexts() {
-        healthbar.fillAmount = health / maxhealth;
-        foodbar.fillAmount = food / maxFood;
-        //healthText.text = health + "/" + maxhealth;
-        //foodText.text = food.ToString("F1") + "/" + maxFood;
+        if (healthbar != null) {
+            healthbar.fillAmount = health / maxhealth;
+            foodbar.fillAmount = food / maxFood;
+            //healthText.text = health + "/" + maxhealth;
+            //foodText.text = food.ToString("F1") + "/" + maxFood;
+        }
     }
 
     public void UpdateExperienceTexts() {
-        levelText.text = "Level: " + level.ToString();
-        experienceBar.fillAmount = (float)experience / (float)maxExperience;
-        //xpText.text = experience.ToString();
+        if (levelText != null) {
+            levelText.text = "Level: " + level.ToString();
+            experienceBar.fillAmount = (float)experience / (float)maxExperience;
+            //xpText.text = experience.ToString();
+        }
     }
 
     public void Damage(float amount) {

@@ -112,11 +112,13 @@ public class GroupMovement : MonoBehaviour {
             }
         }
 
-        Enemy enemy = EnemyManager.instance.EnemyAtPosition(centerOfWolves, 5);
+        if (EnemyManager.instance != null) {
+            Enemy enemy = EnemyManager.instance.EnemyAtPosition(centerOfWolves, 5);
 
-        if (enemy != null && enemy.targetWolf == null) {
-            enemy.targetWolf = transform;
-            attackingEnemy = enemy;
+            if (enemy != null && enemy.targetWolf == null) {
+                enemy.targetWolf = transform;
+                attackingEnemy = enemy;
+            }
         }
 
         if (attackingEnemy != null) {

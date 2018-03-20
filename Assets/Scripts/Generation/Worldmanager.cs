@@ -10,13 +10,13 @@ public class Worldmanager : MonoBehaviour {
 
     public static Worldmanager instance;
 
+    public GameObject treePrefab;
+
     public Transform target;
 
     public SpawnType spawnType;
 
     public int tileXY;
-    public int viewRange;
-
     public bool useThread;
 
     public Material groundMaterial;
@@ -34,6 +34,8 @@ public class Worldmanager : MonoBehaviour {
     Thread generationThread;
 
     public UnityEngine.UI.Text settingsText;
+
+    public Vector3[] trianglePoints;
 
     public bool SpawnTiles = true;
 
@@ -59,7 +61,9 @@ public class Worldmanager : MonoBehaviour {
             //spawnType = PlayerPrefs.GetInt("Pro") == 0 ? SpawnType.Procedural : SpawnType.Panels;
         }
 
-        spawnType = SpawnType.Panels;
+        spawnType = SpawnType.Procedural;
+        useThread = true;
+        flatShading = true;
 
         settingsText.text = spawnType.ToString() + (spawnType == SpawnType.Procedural ? " / " + (useThread ? "Threading" : "Main Thread") + " / " + (flatShading ? "Flat" : "Smooth") : "");
 
@@ -97,6 +101,9 @@ public class Worldmanager : MonoBehaviour {
                     if (useThread) {
                         generationThread = new Thread(chunksToUpdate[0].GenerateData);
                         generationThread.Start();
+
+                        //OcclusionThread = new Thread(TreeChecker);
+                        //OcclusionThread.Start();
                     } else {
                         chunksToUpdate[0].GenerateData();
                     }
@@ -125,8 +132,12 @@ public class Worldmanager : MonoBehaviour {
     void UpdateChunk() {
         List<Vector2> lists = new List<Vector2>();
 
-        for (int xOffset = -viewRange; xOffset <= viewRange + 1; xOffset++) {
-            for (int yOffset = -viewRange + 1; yOffset <= viewRange + 1; yOffset++) {
+        for (int xOffset = -2; xOffset <= 3; xOffset++) {
+            for (int yOffset = 0; yOffset <= 2; yOffset++) {
+                if ((xOffset == -2 || xOffset == 3) && yOffset <= 0) {
+                    continue;
+                }
+
                 Vector2 viewedChunkPos = new Vector2(Mathf.FloorToInt(target.position.x / tileXY) + xOffset, Mathf.FloorToInt(target.position.z / tileXY) + yOffset);
                 lists.Add(viewedChunkPos);
 
@@ -185,6 +196,12 @@ public class Worldmanager : MonoBehaviour {
         if(!chunkDictionary.ContainsKey(v))
             chunkDictionary.Add(v, g);
     }
+
+    public void PlaceTree(Vector3 pos, Transform parent) {
+        GameObject go = Instantiate(treePrefab, parent);
+        float fl = 0.7f;
+        go.transform.localPosition = pos + new Vector3(Random.Range(-fl, fl), -0.2f, Random.Range(-fl, fl));
+    }
 }
 
 public class Chunk {
@@ -193,6 +210,8 @@ public class Chunk {
     List<Vector3> verts = new List<Vector3>();
     List<Vector2> uvs = new List<Vector2>();
     List<int> tris = new List<int>();
+
+    List<Vector3> treeLoc = new List<Vector3>();
 
     System.Random rng;
 
@@ -203,6 +222,7 @@ public class Chunk {
         int chunkSize = Worldmanager.instance.tileXY;
 
         float[,] map = GetNoise((int)chunkPos.x * Worldmanager.instance.tileXY, (int)chunkPos.y * Worldmanager.instance.tileXY, chunkSize + 1);
+        //float[,] map = Noise.GenerateMap(chunkPos.x * Worldmanager.instance.tileXY, chunkPos.y * Worldmanager.instance.tileXY, chunkSize + 1);
 
         if (Worldmanager.instance.flatShading) {
             for (int y = 0; y < chunkSize; y++) {
@@ -250,6 +270,11 @@ public class Chunk {
                     tris.Add(triCount + 3);
                     tris.Add(triCount + 4);
                     tris.Add(triCount + 5);
+
+                    if (map[x, y] < 1.7f) {
+                        //if(rng.Next(10) < 7)
+                            treeLoc.Add(new Vector3(beginX, map[x, y], beginY));
+                    }
                 }
             }
         } 
@@ -283,20 +308,20 @@ public class Chunk {
         float[,] noisemap = new float[size, size];
 
         float multiplier = 2;
-        float other = 1.2f;
+        //float other = 1.2f;
 
         for (int i = 0; i < 8; i++) {
             for (int y = 0; y < size; y++) {
                 for (int x = 0; x < size; x++) {
                     float height = 0;
-                    height += Mathf.PerlinNoise((chunkX + x + (i * 10)) * 0.1f * other, (chunkY + y - (i * 5)) * 0.1f * other);
+                    height += Mathf.PerlinNoise((chunkX + x + (i * 10)) * 0.1f, (chunkY + y - (i * 5)) * 0.1f);
                     height *= multiplier;
-                    noisemap[x, y] += height * 0.2f;
+                    noisemap[x, y] += height * 0.13f;
                 }
             }
 
-            multiplier += 0.3f;
-            other += 0.05f;
+            multiplier += 0.4f;
+            //other += 0.05f;
         }
 
         return noisemap;
@@ -311,6 +336,7 @@ public class Chunk {
         chunkObject.name = location.ToString();
         chunkObject.transform.position = location;
         chunkObject.transform.SetParent(Worldmanager.instance.transform);
+        chunkObject.layer = LayerMask.NameToLayer("Water");
 
         MeshFilter meshFilter = chunkObject.AddComponent<MeshFilter>();
         MeshRenderer meshRenderer = chunkObject.AddComponent<MeshRenderer>();
@@ -332,6 +358,10 @@ public class Chunk {
 
         meshRenderer.material = Worldmanager.instance.groundMaterial;
 
+        foreach (Vector3 loc in treeLoc) {
+            Worldmanager.instance.PlaceTree(loc, chunkObject.transform);
+        }
+
         //Debug.Log("Chunk Done Loading");
 
         verts.Clear();
@@ -341,6 +371,8 @@ public class Chunk {
         meshFilter = null;
         meshRenderer = null;
         meshCollider = null;
+
+        treeLoc.Clear();
 
         Worldmanager.instance.AddToChunkDictionary(chunkPos, chunkObject);
         Worldmanager.instance.updated = false;

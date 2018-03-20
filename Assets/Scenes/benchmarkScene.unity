@@ -378,6 +378,7 @@ GameObject:
   m_Component:
   - component: {fileID: 225032629}
   - component: {fileID: 225032628}
+  - component: {fileID: 225032630}
   m_Layer: 0
   m_Name: PackLeader
   m_TagString: Untagged
@@ -424,6 +425,31 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &225032630
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 225032627}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 67126846706b1db4f930758d9cd5a1d2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  health: 0
+  maxhealth: 100
+  healthbar: {fileID: 0}
+  food: 0
+  maxFood: 100
+  foodbar: {fileID: 0}
+  foodConsumptionInterval: 0
+  foodConsumption: 0
+  level: 0
+  levelText: {fileID: 0}
+  experienceBar: {fileID: 0}
+  experience: 0
+  maxExperience: 0
+  atRestingPlace: 0
 --- !u!1 &298136250
 GameObject:
   m_ObjectHideFlags: 0
@@ -1323,6 +1349,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f1eb0d2331773964ea8277296eee518e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  treePrefab: {fileID: 1647603676411896, guid: 75cc297cc099b924ba45483a1d9a6168, type: 2}
   target: {fileID: 2054463265}
   spawnType: 0
   tileXY: 10
@@ -1332,6 +1359,10 @@ MonoBehaviour:
   updated: 0
   generating: 0
   settingsText: {fileID: 1951498205}
+  trianglePoints:
+  - {x: 0, y: 0, z: -19}
+  - {x: 25, y: 0, z: 18}
+  - {x: -25, y: 0, z: 18}
   SpawnTiles: 1
   panels:
   - {fileID: 1069018596883756, guid: 577198d278f6e5b438d00896517cbc24, type: 2}

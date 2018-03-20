@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.44657898, g: 0.4964133, b: 0.5748178, a: 1}
+  m_IndirectSpecularColor: {r: 0.44657844, g: 0.49641222, b: 0.57481694, a: 1}
 --- !u!157 &3
 LightmapSettings:
   m_ObjectHideFlags: 0
@@ -289,10 +289,51 @@ MonoBehaviour:
   offsetAdder: {x: 100, y: 0, z: -200}
   offset: {x: 500, y: 0, z: 0}
   tex: {fileID: 0}
+  colorPallete:
+  - {r: 1, g: 0, b: 0, a: 1}
+  - {r: 1, g: 0.5586207, b: 0, a: 1}
+  - {r: 1, g: 0.8344828, b: 0, a: 1}
+  - {r: 0.94482756, g: 1, b: 0, a: 1}
+  - {r: 0.44827592, g: 1, b: 0, a: 1}
+  - {r: 0.034482718, g: 1, b: 0, a: 1}
+  - {r: 0, g: 0.734, b: 0.17241383, a: 1}
+  - {r: 0.25983998, g: 0.39705884, b: 0.29207218, a: 1}
   redLine: 0.87
+  curve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 2
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+    - serializedVersion: 2
+      time: 0.5
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+    - serializedVersion: 2
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 0
+  settings:
+    normalizeMode: 0
+    scale: 10
+    octaves: 3
+    persistance: 0.509
+    lacunarity: 3
+    seed: 0
+    offset: {x: 0, y: 0}
   multiplierBegin: 2
   otherBegin: 1.2
-  multiplierIncrease: 0.6
+  multiplierIncrease: 40
   otherIncrease: -0.29
 --- !u!4 &810477233
 Transform:
