@@ -335,7 +335,7 @@ MonoBehaviour:
   multiplierBegin: 2
   otherBegin: 0.08
   multiplierIncrease: 0.11
-  otherIncrease: 0.11
+  otherIncrease: 0.6
 --- !u!4 &810477233
 Transform:
   m_ObjectHideFlags: 0

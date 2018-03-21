@@ -55,7 +55,7 @@ public class PerlinTest : MonoBehaviour {
     void Update() {
         //float[,] map = GetNoise(0, 0, size);
         //float[,] map = GetTreeNoise(0, 0, size, go);
-        float[,] map = Noise.SimplePerlin(0, 0, size, otherBegin, multiplierIncrease, otherIncrease);
+        int[,] map = Noise.SimplePerlin(0, 0, size, otherBegin, multiplierIncrease, otherIncrease);
 
         //timer += Time.deltaTime * 5f;
         //timer2 += Time.deltaTime * 0.1f;
@@ -86,8 +86,10 @@ public class PerlinTest : MonoBehaviour {
         for (int y = 0; y < size; y++) {
             for (int x = 0; x < size; x++) {
                 float perc = Mathf.InverseLerp(lowest, highest, map[x, y]);
-                float col = map[x, y];
-                Color color = new Color(col, col, col);
+                float r = map[x, y] == 1 || map[x, y] == 3 || map[x, y] == 5 || map[x, y] == 7 ? 1 : 0;
+                float g = map[x, y] == 2 || map[x, y] == 3 || map[x, y] == 6 || map[x, y] == 7 ? 1 : 0;
+                float b = map[x, y] == 4 || map[x, y] == 5 || map[x, y] == 6 || map[x, y] == 7 ? 1 : 0;
+                Color color = new Color(r, g, b);
                 //colors[(y * size) + x] = RedAt(color, perc);
                 //colors[(y * size) + x] = GetColor(perc);
                 colors[(y * size) + x] =color;

@@ -413,6 +413,8 @@ MonoBehaviour:
   restingAreas: []
   knob: {fileID: 394359720}
   mouseControl: 1
+  restingPrefab: {fileID: 1171668250227276, guid: ab7259b6efe17dd4ba8cde709d6ffd5b,
+    type: 2}
 --- !u!4 &225032629
 Transform:
   m_ObjectHideFlags: 0

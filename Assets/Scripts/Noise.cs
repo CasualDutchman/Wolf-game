@@ -6,9 +6,20 @@ public class Noise {
 
     public enum NormalizeMode { Local, Global };
 
-    public static bool IsEnemyChunk(int chunkX, int chunkY) {
-        float f = Mathf.PerlinNoise(chunkX / 1.86f, chunkX / 1.86f) * 0.5f;
-        return f > 0.4f || f < 0.1f;
+    public static int GetChunkInfo(int chunkX, int chunkY) {
+        float f = Mathf.PerlinNoise(chunkX / 1.86f, chunkY / 1.86f) * 0.5f;
+        bool b1 = f > 0.4f || f < 0.1f;
+
+        float f1 = Mathf.PerlinNoise(chunkX / 1.12f, chunkY / 1.12f) * 0.7f;
+        bool b2 = f1 > 0.6f || f1 < 0.1f;
+
+        int i = 0;
+        i += b1 ? 1 : 0;
+        i += b2 ? 2 : 0;
+        return i;
+
+        //float f = Mathf.PerlinNoise(chunkX / 1.86f, chunkX / 1.86f) * 0.5f;
+        //return f > 0.4f || f < 0.1f;
     }
 
     public static bool[,] GetTreeMap(int chunkX, int chunkY, int size) {
@@ -55,27 +66,43 @@ public class Noise {
         return GenerateNoiseMap(size, size, setting, Vector3.zero, new Vector2(x, y));
     }
 
-    public static float[,] SimplePerlin(float chunkX, float chunkY, int size, float scale, float scale2, float scale3) {
-        float[,] noiseMap = new float[size, size];
+    public static int[,] SimplePerlin(float chunkX, float chunkY, int size, float scale, float scale2, float scale3) {
+        int[,] noiseMap = new int[size, size];
 
         
 
         for (int y = 0; y < size; y++) {
             for (int x = 0; x < size; x++) {
+
+                int useX = x - (size / 2);
+                int useY = y - (size / 2);
+
                 //float k = Mathf.PerlinNoise(x / scale, y / scale) * 10.0f;
                 //bool bb = Mathf.RoundToInt(Mathf.PerlinNoise((x + x) / scale, (y + y) / scale)) == 0;
 
                 //System.Random rng = new System.Random(x + y);
                 //bool p = rng.Next(x + y) == 0;
 
-                float f = Mathf.PerlinNoise(x / scale, y / scale) * 0.5f;
-                bool b1 = f > 0.4f || f < 0.1f;
+                float prefix = 0.5f;
+                float f = Mathf.PerlinNoise(useX / scale, useY / scale) * prefix;
+                bool b1 = f > prefix - 0.1f || f < 0.1f;
+
+                float prefix2 = 0.7f;
+                float f1 = Mathf.PerlinNoise(useX / scale2, useY / scale2) * prefix2;
+                bool b2 = f1 > prefix2 - 0.1f || f1 < 0.1f;
+
+
+                int i = 0;
+                i += b1 ? 1 : 0;
+                i += b2 ? 2 : 0;
+                //i += b3 ? 4 : 0;
+
                 //bool b2 = f > p * 0.5f && f < (p + 1) * 0.05f;
                 //float f2 = Mathf.PerlinNoise((chunkX + x) / scale2, (chunkY + y) / scale2);
                 //float f3 = Mathf.PerlinNoise((chunkX + x) / scale3, (chunkY + y) / scale3);
                 //f = f + f2 + f3;
                 //f /= 3f;
-                noiseMap[x, y] = b1 ? 1 : 0;//f > 0.5f ? 1 : 0;
+                noiseMap[x, y] = i;//b1 ? 1 : (b2 ? 2 : 0);//f > 0.5f ? 1 : 0;
 
             }
         }

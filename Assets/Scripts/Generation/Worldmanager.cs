@@ -187,6 +187,8 @@ public class Worldmanager : MonoBehaviour {
 
         while (remove.Count > 0) {
             EnemyManagerr.instance.RemoveEnemyAtChunk(remove[0]);
+            GroupMovement.instance.RemoveRestingAtChunk(remove[0]);
+
             Destroy(chunkDictionary[remove[0]]);
             chunkDictionary.Remove(remove[0]);
             remove.RemoveAt(0);
@@ -410,10 +412,17 @@ public class Chunk {
 
         treeLoc.Clear();
 
-        if (Noise.IsEnemyChunk((int)chunkPos.x, (int)chunkPos.y)) {
-            chunkObject.name = "Enemy Chunk";
+        int chunkInfo = Noise.GetChunkInfo((int)chunkPos.x, (int)chunkPos.y);
+
+        if (chunkInfo == 1 || chunkInfo == 3 || chunkInfo == 5 || chunkInfo == 7) {
+            chunkObject.name += " E";
 
             EnemyManagerr.instance.SpawnEnemy(location);
+        }
+        if (chunkInfo == 2 || chunkInfo == 3 || chunkInfo == 6 || chunkInfo == 7) {
+            chunkObject.name += " R";
+
+            GroupMovement.instance.SpawnResting(location);
         }
 
         Worldmanager.instance.AddToChunkDictionary(chunkPos, chunkObject);

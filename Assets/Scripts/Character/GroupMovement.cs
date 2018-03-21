@@ -37,7 +37,7 @@ public class GroupMovement : MonoBehaviour {
 
     public Vector3 centerOfWolves;
 
-    public Transform[] restingAreas;
+    public List<Transform> restingAreas = new List<Transform>();
 
     Vector3 velocity;
 
@@ -193,5 +193,23 @@ public class GroupMovement : MonoBehaviour {
         }
 
         return null;
+    }
+
+    public GameObject restingPrefab;
+
+    public void SpawnResting(Vector3 pos) {
+        GameObject go = Instantiate(restingPrefab);
+        go.transform.position = pos + Vector3.up;
+
+        restingAreas.Add(go.transform);
+    }
+
+    public void RemoveRestingAtChunk(Vector2 chunkPos) {
+        Transform t = RestingAreaAtPosition(new Vector3(chunkPos.x * Worldmanager.instance.tileXY, 0, chunkPos.y * Worldmanager.instance.tileXY), Worldmanager.instance.tileXY);
+        if (t != null) {
+            GameObject go = t.gameObject;
+            restingAreas.Remove(t);
+            Destroy(go);
+        }
     }
 }
