@@ -10,7 +10,7 @@ public class Worldmanager : MonoBehaviour {
 
     public static Worldmanager instance;
 
-    public GameObject treePrefab;
+    public GameObject[] treePrefab;
 
     public Transform target;
 
@@ -92,6 +92,8 @@ public class Worldmanager : MonoBehaviour {
         SceneManager.LoadScene(0);
     }
 
+    float checkChunksTimer;
+
     void Update () {
         Vector2 newChunkPos = new Vector2(Mathf.FloorToInt(target.position.x / (tileXY * 0.5f)), Mathf.FloorToInt(target.position.z / (tileXY * 0.5f)));
 
@@ -123,6 +125,27 @@ public class Worldmanager : MonoBehaviour {
 
             if (newChunkPos != playerChunkPos) {
                 UpdateChunk();
+            }
+
+            checkChunksTimer += Time.deltaTime;
+
+            if (checkChunksTimer >= 30) {
+
+                List<GameObject> toRemove = new List<GameObject>();
+                foreach (Transform child in transform) {
+                    if(!chunkDictionary.ContainsKey(new Vector2(child.position.x / tileXY, child.position.z / tileXY))) {
+                        toRemove.Add(child.gameObject);
+                        Debug.Log("This one does not belong here");
+                    }
+                }
+
+                for (int i = 0; i < toRemove.Count; i++) {
+                    Destroy(toRemove[i]);
+                }
+
+                toRemove.Clear();
+
+                checkChunksTimer = 0;
             }
         }
 
@@ -163,6 +186,7 @@ public class Worldmanager : MonoBehaviour {
         }
 
         while (remove.Count > 0) {
+            EnemyManagerr.instance.RemoveEnemyAtChunk(remove[0]);
             Destroy(chunkDictionary[remove[0]]);
             chunkDictionary.Remove(remove[0]);
             remove.RemoveAt(0);
@@ -197,10 +221,19 @@ public class Worldmanager : MonoBehaviour {
             chunkDictionary.Add(v, g);
     }
 
+    int amount;
+
     public void PlaceTree(Vector3 pos, Transform parent) {
-        GameObject go = Instantiate(treePrefab, parent);
-        float fl = 0.7f;
-        go.transform.localPosition = pos + new Vector3(Random.Range(-fl, fl), -0.2f, Random.Range(-fl, fl));
+        System.Random prng = new System.Random((int)(pos.x + pos.y + pos.z));
+        GameObject go = Instantiate(treePrefab[prng.Next(treePrefab.Length)], parent);
+
+        go.transform.localPosition = pos + new Vector3((prng.Next(0, 200) - 100) * 0.006f, 0f, (prng.Next(0, 200) - 100) * 0.008f);
+
+        //if (amount < 10) {
+        //    GameObject l = GameObject.CreatePrimitive(PrimitiveType.Cube);
+        //    l.transform.position = go.transform.position;
+        //    amount++;
+        //}
     }
 }
 
@@ -221,8 +254,12 @@ public class Chunk {
 
         int chunkSize = Worldmanager.instance.tileXY;
 
-        float[,] map = GetNoise((int)chunkPos.x * Worldmanager.instance.tileXY, (int)chunkPos.y * Worldmanager.instance.tileXY, chunkSize + 1);
+        //float[,] map = GetNoise((int)chunkPos.x * Worldmanager.instance.tileXY, (int)chunkPos.y * Worldmanager.instance.tileXY, chunkSize + 1);
         //float[,] map = Noise.GenerateMap(chunkPos.x * Worldmanager.instance.tileXY, chunkPos.y * Worldmanager.instance.tileXY, chunkSize + 1);
+
+
+        float[,] map = Noise.GetHeightMap((int)chunkPos.x * Worldmanager.instance.tileXY, (int)chunkPos.y * Worldmanager.instance.tileXY, chunkSize + 1);
+        bool[,] treemap = Noise.GetTreeMap((int)chunkPos.x * Worldmanager.instance.tileXY, (int)chunkPos.y * Worldmanager.instance.tileXY, chunkSize);
 
         if (Worldmanager.instance.flatShading) {
             for (int y = 0; y < chunkSize; y++) {
@@ -271,9 +308,8 @@ public class Chunk {
                     tris.Add(triCount + 4);
                     tris.Add(triCount + 5);
 
-                    if (map[x, y] < 1.7f) {
-                        //if(rng.Next(10) < 7)
-                            treeLoc.Add(new Vector3(beginX, map[x, y], beginY));
+                    if (treemap[x, y]) {
+                        treeLoc.Add(new Vector3(beginX, map[x, y], beginY));
                     }
                 }
             }
@@ -373,6 +409,12 @@ public class Chunk {
         meshCollider = null;
 
         treeLoc.Clear();
+
+        if (Noise.IsEnemyChunk((int)chunkPos.x, (int)chunkPos.y)) {
+            chunkObject.name = "Enemy Chunk";
+
+            EnemyManagerr.instance.SpawnEnemy(location);
+        }
 
         Worldmanager.instance.AddToChunkDictionary(chunkPos, chunkObject);
         Worldmanager.instance.updated = false;

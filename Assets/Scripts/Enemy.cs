@@ -51,12 +51,21 @@ public class Enemy : MonoBehaviour {
         velocity = Vector3.ClampMagnitude(velocity, 1);
         velocity = Vector3.ClampMagnitude(velocity * Time.deltaTime * maxSpeed, maxSpeed);
         transform.position += velocity;
+
+        Ray ray = new Ray(transform.position + (Vector3.up * 3), Vector3.down);
+        RaycastHit hit;
+
+        if (Physics.Raycast(ray, out hit, 10, LayerMask.GetMask("Water"))) {
+            Vector3 v3 = transform.position;
+            v3.y = hit.point.y;
+            transform.position = v3;
+        }
     }
 
     public bool Damage(float amount) {
         health -= amount;
         if (health < 0) {
-            EnemyManager.instance.RemoveEnemy(this);
+            EnemyManagerr.instance.RemoveEnemy(this);
             GroupMovement.instance.KillEnemy();
             Destroy(gameObject);
             return true;

@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class GroupMovement : MonoBehaviour {
 
@@ -40,6 +41,14 @@ public class GroupMovement : MonoBehaviour {
 
     Vector3 velocity;
 
+    Vector3 begin;
+    Vector3 hold;
+    Vector3 dir;
+
+    public Image knob;
+
+    public bool mouseControl = true;
+
     void Awake() {
         instance = this;
 
@@ -70,13 +79,35 @@ public class GroupMovement : MonoBehaviour {
 	}
 	
 	void Update () {
-        velocity = new Vector3(Input.GetAxis("Horizontal") * Time.deltaTime * maxSpeed, 0, Input.GetAxis("Vertical") * Time.deltaTime * maxSpeed);
-        
+        if (mouseControl) {
+            if (Input.GetMouseButtonDown(0)) {
+                begin = Input.mousePosition;
+                knob.enabled = true;
+                knob.GetComponent<RectTransform>().anchoredPosition = Input.mousePosition;
+            }
 
-        if(velocity.normalized.magnitude < 0.3f && Vector3.Distance(transform.position, centerOfWolves) > 4f) {
-            transform.position = centerOfWolves;
-        } else {
-            transform.position += velocity;
+            if (Input.GetMouseButton(0)) {
+                hold = Input.mousePosition;
+                dir = hold - begin;
+                dir = Vector3.ClampMagnitude(dir * 0.1f, 5);
+
+                transform.Translate(new Vector3(dir.x, 0, dir.y) * Time.deltaTime, Space.World);
+            }
+
+            if (Input.GetMouseButtonUp(0)) {
+                knob.enabled = false;
+                transform.position = centerOfWolves;
+            }
+        } 
+        else {
+            velocity = new Vector3(Input.GetAxis("Horizontal") * Time.deltaTime * maxSpeed, 0, Input.GetAxis("Vertical") * Time.deltaTime * maxSpeed);
+
+
+            if (velocity.normalized.magnitude < 0.3f && Vector3.Distance(transform.position, centerOfWolves) > 4f) {
+                transform.position = centerOfWolves;
+            } else {
+                transform.position += velocity;
+            }
         }
 
         centerOfWolves = new Vector3();
@@ -112,8 +143,8 @@ public class GroupMovement : MonoBehaviour {
             }
         }
 
-        if (EnemyManager.instance != null) {
-            Enemy enemy = EnemyManager.instance.EnemyAtPosition(centerOfWolves, 5);
+        if (EnemyManagerr.instance != null) {
+            Enemy enemy = EnemyManagerr.instance.FromPosition(centerOfWolves, 5);
 
             if (enemy != null && enemy.targetWolf == null) {
                 enemy.targetWolf = transform;
