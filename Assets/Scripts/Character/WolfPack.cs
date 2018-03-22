@@ -5,22 +5,26 @@ using UnityEngine.UI;
 
 public class WolfPack : MonoBehaviour {
 
+    [Header("Wolf Attributes")]
     public float health;
     public float maxhealth;
-    public Image healthbar;
-
     public float food;
     public float maxFood;
-    public Image foodbar;
-    public float foodConsumptionInterval;
-    public float foodConsumption;
-
+    public float attackDamage;
+    public float attackSpeed;
     public int level;
-    public Text levelText;
-
-    public Image experienceBar;
     public int experience;
     public int maxExperience;
+
+    [Header("UI")]
+    public Image healthbar;
+    public Image foodbar;
+    public Text levelText;
+    public Image experienceBar;
+
+    [Header("Misc")]
+    public float foodConsumptionInterval;
+    public float foodConsumption;
 
     float foodTimer;
 

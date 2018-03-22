@@ -23,7 +23,9 @@ public class WolfMovement : MonoBehaviour {
 
         Vector3 look = velocity;
         look.y = 0;
-        transform.rotation = Quaternion.LookRotation(look);
+        if (look !=  Vector3.zero) {
+            transform.rotation = Quaternion.LookRotation(look);
+        }
 
         Ray ray = new Ray(transform.position + (Vector3.up * 3), Vector3.down);
         RaycastHit hit;

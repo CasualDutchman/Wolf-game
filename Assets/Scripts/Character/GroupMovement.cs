@@ -9,19 +9,17 @@ public class GroupMovement : MonoBehaviour {
 
     WolfPack wolfPack;
 
-    public float health;
-    public float maxHealth;
-
-    public float attackDamage;
-    public float attackSpeed;
-
     public GameObject wolfPrefab;
 
     public Transform cameraRig;
 
+    [HideInInspector]
     public Vector3[] relativePositions;
+    [HideInInspector]
     public Vector3[] newRelativePositions;
+    [HideInInspector]
     public Vector3[] oldRelativePositions;
+    [HideInInspector]
     public Transform[] wolves;
 
     Enemy attackingEnemy;
@@ -35,9 +33,8 @@ public class GroupMovement : MonoBehaviour {
 
     public float maxSpeed = 3;
 
+    [HideInInspector]
     public Vector3 centerOfWolves;
-
-    public List<Transform> restingAreas = new List<Transform>();
 
     Vector3 velocity;
 
@@ -56,8 +53,6 @@ public class GroupMovement : MonoBehaviour {
 
     void Start () {
         wolfPack = GetComponent<WolfPack>();
-
-        health = maxHealth;
 
         relativePositions = new Vector3[amountOfWolves];
         newRelativePositions = new Vector3[amountOfWolves];
@@ -143,8 +138,8 @@ public class GroupMovement : MonoBehaviour {
             }
         }
 
-        if (EnemyManagerr.instance != null) {
-            Enemy enemy = EnemyManagerr.instance.FromPosition(centerOfWolves, 5);
+        if (EnemyManager.instance != null) {
+            Enemy enemy = EnemyManager.instance.FromPosition(centerOfWolves, 5);
 
             if (enemy != null && enemy.targetWolf == null) {
                 enemy.targetWolf = transform;
@@ -154,15 +149,15 @@ public class GroupMovement : MonoBehaviour {
 
         if (attackingEnemy != null) {
             attackTimer += Time.deltaTime;
-            if (attackTimer >= attackSpeed) {
+            if (attackTimer >= wolfPack.attackSpeed) {
                 attackTimer = 0;
-                if (attackingEnemy.Damage(attackDamage)) {
+                if (attackingEnemy.Damage(wolfPack.attackDamage)) {
                     attackingEnemy = null;
                 }
             }
         }
 
-        wolfPack.atRestingPlace = RestingAreaAtPosition(centerOfWolves, 3) != null;
+        wolfPack.atRestingPlace = RestingManager.instance.RestingAreaAtPosition(centerOfWolves, 3) != null;
 	}
 
     public void Attack(float damage) {
@@ -180,36 +175,5 @@ public class GroupMovement : MonoBehaviour {
 
     public Vector3 RelativePositionToWorld(int id) {
         return transform.position + relativePositions[id];
-    }
-
-    public Transform RestingAreaAtPosition(Vector3 pos, float radius) {
-        foreach (Transform t in restingAreas) {
-            bool betweenX = Mathf.Abs(t.transform.position.x - pos.x) < radius;
-            bool betweenZ = Mathf.Abs(t.transform.position.z - pos.z) < radius;
-
-            if (betweenX && betweenZ) {
-                return t;
-            }
-        }
-
-        return null;
-    }
-
-    public GameObject restingPrefab;
-
-    public void SpawnResting(Vector3 pos) {
-        GameObject go = Instantiate(restingPrefab);
-        go.transform.position = pos + Vector3.up;
-
-        restingAreas.Add(go.transform);
-    }
-
-    public void RemoveRestingAtChunk(Vector2 chunkPos) {
-        Transform t = RestingAreaAtPosition(new Vector3(chunkPos.x * Worldmanager.instance.tileXY, 0, chunkPos.y * Worldmanager.instance.tileXY), Worldmanager.instance.tileXY);
-        if (t != null) {
-            GameObject go = t.gameObject;
-            restingAreas.Remove(t);
-            Destroy(go);
-        }
     }
 }

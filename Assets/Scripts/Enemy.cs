@@ -52,6 +52,12 @@ public class Enemy : MonoBehaviour {
         velocity = Vector3.ClampMagnitude(velocity * Time.deltaTime * maxSpeed, maxSpeed);
         transform.position += velocity;
 
+        Vector3 look = velocity;
+        look.y = 0;
+        if (look != Vector3.zero) {
+            transform.rotation = Quaternion.LookRotation(look);
+        }
+
         Ray ray = new Ray(transform.position + (Vector3.up * 3), Vector3.down);
         RaycastHit hit;
 
@@ -65,7 +71,7 @@ public class Enemy : MonoBehaviour {
     public bool Damage(float amount) {
         health -= amount;
         if (health < 0) {
-            EnemyManagerr.instance.RemoveEnemy(this);
+            EnemyManager.instance.RemoveEnemy(this);
             GroupMovement.instance.KillEnemy();
             Destroy(gameObject);
             return true;

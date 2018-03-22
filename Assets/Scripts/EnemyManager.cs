@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class EnemyManagerr : MonoBehaviour {
+public class EnemyManager : MonoBehaviour {
 
-    public static EnemyManagerr instance;
+    public static EnemyManager instance;
 
     List<Enemy> enemies = new List<Enemy>();
     public GameObject enemyPrefab;
