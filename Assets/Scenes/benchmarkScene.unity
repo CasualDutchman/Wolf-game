@@ -978,7 +978,7 @@ MonoBehaviour:
   generating: 0
   loadingUI: {fileID: 574895741}
   progressbar: {fileID: 1374494819}
-  showLoadingScreen: 0
+  showLoadingScreen: 1
 --- !u!4 &1248966340
 Transform:
   m_ObjectHideFlags: 0
