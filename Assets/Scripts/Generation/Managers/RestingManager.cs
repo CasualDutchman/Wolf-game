@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class RestingManager : MonoBehaviour {
+public class RestingManager : MonoBehaviour, IManager {
 
     public static RestingManager instance;
 
@@ -13,14 +13,18 @@ public class RestingManager : MonoBehaviour {
         instance = this;
     }
 
-    public void SpawnResting(Vector3 pos) {
+    public int GetBitID() {
+        return 2;
+    }
+
+    public void Spawn(Vector3 pos) {
         GameObject go = Instantiate(restingPrefab);
         go.transform.position = pos + Vector3.up;
 
         restingAreas.Add(go.transform);
     }
 
-    public Transform RestingAreaAtPosition(Vector3 pos, float radius) {
+    public Object FromPosition(Vector3 pos, float radius) {
         foreach (Transform t in restingAreas) {
             bool betweenX = Mathf.Abs(t.transform.position.x - pos.x) < radius;
             bool betweenZ = Mathf.Abs(t.transform.position.z - pos.z) < radius;
@@ -33,12 +37,16 @@ public class RestingManager : MonoBehaviour {
         return null;
     }
 
-    public void RemoveRestingAtChunk(Vector2 chunkPos) {
-        Transform t = RestingAreaAtPosition(new Vector3(chunkPos.x * Worldmanager.instance.tileXY, 0, chunkPos.y * Worldmanager.instance.tileXY), Worldmanager.instance.tileXY);
+    public void RemoveAtChunk(Vector2 chunkPos) {
+        Transform t = (Transform)FromPosition(new Vector3(chunkPos.x * Worldmanager.instance.TileSize, 0, chunkPos.y * Worldmanager.instance.TileSize), Worldmanager.instance.TileSize);
         if (t != null) {
             GameObject go = t.gameObject;
             restingAreas.Remove(t);
             Destroy(go);
         }
+    }
+
+    public void Remove(Object obj) {
+        restingAreas.Remove((Transform)obj);
     }
 }

@@ -71,7 +71,7 @@ public class Enemy : MonoBehaviour {
     public bool Damage(float amount) {
         health -= amount;
         if (health < 0) {
-            EnemyManager.instance.RemoveEnemy(this);
+            EnemyManager.instance.Remove(this);
             GroupMovement.instance.KillEnemy();
             Destroy(gameObject);
             return true;

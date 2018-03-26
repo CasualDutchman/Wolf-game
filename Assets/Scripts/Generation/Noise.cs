@@ -14,8 +14,10 @@ public class Noise {
         bool b2 = f1 > 0.6f || f1 < 0.1f;
 
         int i = 0;
-        i += b1 ? 1 : 0;
-        i += b2 ? 2 : 0;
+        i |= b1 ? (1 << 0) : 0;//change first bit in the int
+        i |= b2 ? (1 << 1) : 0;//change second bit in the int
+        //i += b1 ? 1 : 0;
+        //i += b2 ? 2 : 0;
         return i;
 
         //float f = Mathf.PerlinNoise(chunkX / 1.86f, chunkX / 1.86f) * 0.5f;

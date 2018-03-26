@@ -38,12 +38,19 @@ public class Worldmanager : MonoBehaviour {
     bool loadingLevel = true;
     int loadedChunks = 0;
 
+    public IManager[] managers;
+
     private void Awake() {
         instance = this;
 
         loadingUI.SetActive(showLoadingScreen);
 
         UpdateChunk();
+    }
+
+    void Start() {
+        managers = GetComponents<IManager>();
+
     }
 
     void Update () {
@@ -122,8 +129,9 @@ public class Worldmanager : MonoBehaviour {
         }
 
         while (remove.Count > 0) {
-            EnemyManager.instance.RemoveEnemyAtChunk(remove[0]);
-            RestingManager.instance.RemoveRestingAtChunk(remove[0]);
+            foreach(IManager manager in managers) {
+                manager.RemoveAtChunk(remove[0]);
+            }
 
             Destroy(chunkDictionary[remove[0]]);
             chunkDictionary.Remove(remove[0]);
@@ -285,15 +293,12 @@ public class Chunk {
 
         int chunkInfo = Noise.GetChunkInfo((int)chunkPos.x, (int)chunkPos.y);
 
-        if (chunkInfo == 1 || chunkInfo == 3 || chunkInfo == 5 || chunkInfo == 7) {
-            chunkObject.name += " E";
+        foreach (IManager manager in Worldmanager.instance.managers) {
+            if ((chunkInfo & (1 << manager.GetBitID() - 1)) != 0) { // check if a certain bit is not 0
+                manager.Spawn(location);
 
-            EnemyManager.instance.SpawnEnemy(location);
-        }
-        if (chunkInfo == 2 || chunkInfo == 3 || chunkInfo == 6 || chunkInfo == 7) {
-            chunkObject.name += " R";
-
-            RestingManager.instance.SpawnResting(location);
+                chunkObject.name += " " + chunkInfo;
+            }
         }
 
         Worldmanager.instance.AddToChunkDictionary(chunkPos, chunkObject);

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class EnemyManager : MonoBehaviour {
+public class EnemyManager : MonoBehaviour, IManager {
 
     public static EnemyManager instance;
 
@@ -13,14 +13,18 @@ public class EnemyManager : MonoBehaviour {
         instance = this;
 	}
 	
-	public void SpawnEnemy(Vector3 pos) {
+    public int GetBitID() {
+        return 1;
+    }
+
+	public void Spawn(Vector3 pos) {
         GameObject go = Instantiate(enemyPrefab);
         go.transform.position = pos;
 
         enemies.Add(go.GetComponent<Enemy>());
     }
 
-    public Enemy FromPosition(Vector3 pos, float radius) {
+    public Object FromPosition(Vector3 pos, float radius) {
         foreach (Enemy enemy in enemies) {
             bool betweenX = Mathf.Abs(enemy.transform.position.x - pos.x) < radius;
             bool betweenZ = Mathf.Abs(enemy.transform.position.z - pos.z) < radius;
@@ -33,8 +37,8 @@ public class EnemyManager : MonoBehaviour {
         return null;
     }
 
-    public void RemoveEnemyAtChunk(Vector2 chunkPos) {
-        Enemy enemy = FromPosition(new Vector3(chunkPos.x * Worldmanager.instance.tileXY, 0, chunkPos.y * Worldmanager.instance.tileXY), Worldmanager.instance.tileXY);
+    public void RemoveAtChunk(Vector2 chunkPos) {
+        Enemy enemy = (Enemy)FromPosition(new Vector3(chunkPos.x * Worldmanager.instance.TileSize, 0, chunkPos.y * Worldmanager.instance.TileSize), Worldmanager.instance.TileSize);
         if (enemy != null) {
             GameObject go = enemy.gameObject;
             enemies.Remove(enemy);
@@ -42,7 +46,7 @@ public class EnemyManager : MonoBehaviour {
         }
     }
 
-    public void RemoveEnemy(Enemy enemy) {
-        enemies.Remove(enemy);
+    public void Remove(Object obj) {
+        enemies.Remove((Enemy)obj);
     }
 }

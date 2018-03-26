@@ -139,7 +139,7 @@ public class GroupMovement : MonoBehaviour {
         }
 
         if (EnemyManager.instance != null) {
-            Enemy enemy = EnemyManager.instance.FromPosition(centerOfWolves, 5);
+            Enemy enemy = (Enemy)EnemyManager.instance.FromPosition(centerOfWolves, 5);
 
             if (enemy != null && enemy.targetWolf == null) {
                 enemy.targetWolf = transform;
@@ -157,7 +157,7 @@ public class GroupMovement : MonoBehaviour {
             }
         }
 
-        wolfPack.atRestingPlace = RestingManager.instance.RestingAreaAtPosition(centerOfWolves, 3) != null;
+        wolfPack.atRestingPlace = (Transform)RestingManager.instance.FromPosition(centerOfWolves, 3) != null;
 	}
 
     public void Attack(float damage) {
