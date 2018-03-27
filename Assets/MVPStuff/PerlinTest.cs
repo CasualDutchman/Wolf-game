@@ -48,11 +48,16 @@ public class PerlinTest : MonoBehaviour {
 
             GameObject go = GameObject.CreatePrimitive(PrimitiveType.Quad);
             go.transform.eulerAngles = new Vector3(90, 0, 0);
-            go.transform.position = new Vector3(size * 0.5f, 0, size * 0.5f);
-            go.transform.localScale = Vector3.one * (size);
+            go.transform.position = new Vector3((size * 0.5f) * 0.5f, 0, (size * 0.5f) * 0.5f);
+            go.transform.localScale = Vector3.one * (size * 0.5f);
             go.GetComponent<MeshRenderer>().material.mainTexture = tex;
 
-            SpawnFoliage();
+            go = GameObject.CreatePrimitive(PrimitiveType.Quad);
+            go.transform.eulerAngles = new Vector3(90, 0, 0);
+            go.transform.position = new Vector3(-(size * 0.5f) * 0.5f, 0, (size * 0.5f) * 0.5f);
+            go.transform.localScale = Vector3.one * (size * 0.5f);
+
+            //SpawnFoliage();
         } 
         else {
             SpawnFoliage();
@@ -109,22 +114,47 @@ public class PerlinTest : MonoBehaviour {
     [Range(2, 50)]
     public int go = 2;
 
+    [Range(1, 100)]
+    public float slider100;
+    [Range(1, 50)]
+    public float slider50;
+    [Range(1, 20)]
+    public float slider20;
+    [Range(1, 10)]
+    public float slider10;
+
+    [Range(1, 10)]
+    public float priority1;
+    [Range(1, 10)]
+    public float priority2;
+    [Range(1, 10)]
+    public float priority3;
+    [Range(1, 10)]
+    public float priority4;
+
+    [Range(1, 100)]
+    public float devision;
+
+    float[,] map;
+
     void Update() {
         if (!spawnFoliage) {
             //float[,] map = GetNoise(0, 0, size);
             //float[,] map = GetTreeNoise(0, 0, size, go);
             //int[,] map = Noise.SimplePerlin(0, 0, size, otherBegin, multiplierIncrease, otherIncrease);
 
-            float[,] map = new float[size, size];
+            map = new float[size, size];
 
             for (int y = 0; y < size; y++) {
                 for (int x = 0; x < size; x++) {
-                    float f = Mathf.PerlinNoise((x) / 35.0f, (y) / 35.0f);
-                    float f2 = Mathf.PerlinNoise(( x) / 2.54f, ( y) / 2.54f);
-                    float f3 = Mathf.PerlinNoise(( x) / 0.11f, ( y) / 0.11f);
-                    f = f + f2 + f3;
-                    f /= 3f;
-                    map[x, y] = f;
+                    float f1 = Mathf.PerlinNoise(x / slider100, y / slider100);
+                    float f2 = Mathf.PerlinNoise(x / slider50, y / slider50);
+                    float f3 = Mathf.PerlinNoise(x / slider20, y / slider20);
+                    float f4 = Mathf.PerlinNoise(x / slider10, y / slider10);
+                    float f = (f1 * priority1) + (f2 * priority2) + (f3 * priority3) + (f4 * priority4);
+                    //devision = priority1 + priority2 + priority3 + priority4;
+                    f /= devision;
+                    map[x, y] = curve.Evaluate(f);
                 }
             }
 
@@ -163,6 +193,7 @@ public class PerlinTest : MonoBehaviour {
                     //Color color = new Color(r, g, b);
                     //colors[(y * size) + x] = RedAt(color, perc);
                     //colors[(y * size) + x] = GetColor(perc);
+                    /*
                     float f = map[x, y];
                     if (f > treeThreshold) {
                         colors[(y * size) + x] = Color.green;
@@ -177,7 +208,9 @@ public class PerlinTest : MonoBehaviour {
                     else {
                         colors[(y * size) + x] = Color.white;
                     }
+                    */
                     //colors[(y * size) + x] = new Color(map[x, y], map[x, y], map[x, y]);
+                    colors[(y * size) + x] = GetColor(map[x, y]);
                 }
             }
 
@@ -185,6 +218,58 @@ public class PerlinTest : MonoBehaviour {
             tex.filterMode = FilterMode.Point;
             tex.Apply();
         }
+    }
+
+    List<Transform> spawns = new List<Transform>();
+
+    [ContextMenu("Spawn")]
+    public void Spawn() {
+        if (spawns.Count > 0) {
+            foreach (var item in spawns) {
+                Destroy(item.gameObject);
+            }
+        }
+
+        spawns.Clear();
+
+        for (int y = 0; y < size / 2; y++) {
+            for (int x = 0; x < size / 2; x++) {
+                GameObject g = GetGameObject(GetValue(x, y));
+                if (g != null) {
+                    GameObject go = Instantiate(g);
+
+                    go.transform.position = new Vector3(-(size * 0.5f) + x, 0, y) + new Vector3(0.5f, 0, 0.5f);
+                    spawns.Add(go.transform);
+                }
+            }
+        }
+    }
+
+    float GetValue(int x, int y) {
+        //int posX = x * 2;
+        //posX += Random.Range(0)
+
+        float value = map[x * 2, y * 2];
+
+        return value;
+    }
+
+    GameObject GetGameObject(float value) {
+        GameObject[] gos = new GameObject[] { null, Grass, Rock1, Bush1, Tree1 };
+
+        float one = 1f / (float)gos.Length;
+
+        int i = 0;
+        for (int k = 0; k < gos.Length - 1; k++) {
+
+            if (value > one * k && value < one * (k + 1)) {
+                break;
+            }
+
+            i++;
+        }
+
+        return gos[i];
     }
 
     int amount;
@@ -200,13 +285,6 @@ public class PerlinTest : MonoBehaviour {
             }
 
             i++;
-        }
-        if (amount < 20) {
-            print(i);
-            //print(current);
-            print(one);
-            b = true;
-            amount++;
         }
 
         return colorPallete[i];
