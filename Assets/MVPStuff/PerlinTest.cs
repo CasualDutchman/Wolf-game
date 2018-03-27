@@ -27,22 +27,79 @@ public class PerlinTest : MonoBehaviour {
 
     public AnimationCurve curve;
 
+    public bool spawnFoliage = false;
+    public GameObject Tree1, Tree2;
+    public GameObject Bush1;
+    public GameObject Rock1;
+    public GameObject Grass;
+    public float treeThreshold, bushThreshold, rockThreshold, grassThreshold;
+
     void Start() {
-        tex = new Texture2D(size, size) {
-            name = "Pu"
-        };
+        if (!spawnFoliage) {
+            tex = new Texture2D(size, size) {
+                name = "Pu"
+            };
 
-        colors = new Color[size * size];
+            colors = new Color[size * size];
 
-        tex.SetPixels(colors);
-        tex.filterMode = FilterMode.Point;
-        tex.Apply();
+            tex.SetPixels(colors);
+            tex.filterMode = FilterMode.Point;
+            tex.Apply();
 
+            GameObject go = GameObject.CreatePrimitive(PrimitiveType.Quad);
+            go.transform.eulerAngles = new Vector3(90, 0, 0);
+            go.transform.position = new Vector3(size * 0.5f, 0, size * 0.5f);
+            go.transform.localScale = Vector3.one * (size);
+            go.GetComponent<MeshRenderer>().material.mainTexture = tex;
+
+            SpawnFoliage();
+        } 
+        else {
+            SpawnFoliage();
+        }
+    }
+
+    public void SpawnFoliage() {
         GameObject go = GameObject.CreatePrimitive(PrimitiveType.Quad);
-        go.transform.eulerAngles = new Vector3(90, 0, 0);
-        go.transform.position = new Vector3(0, 1, 0);
-        go.transform.localScale = Vector3.one * (size / 5);
-        go.GetComponent<MeshRenderer>().material.mainTexture = tex;
+        //go.transform.eulerAngles = new Vector3(90, 0, 0);
+        //go.transform.localScale = Vector3.one * size;
+        //go.transform.position = new Vector3(size * 0.5f, 0, size * 0.5f);
+
+        for (int y = 0; y < size; y++) {
+            for (int x = 0; x < size; x++) {
+                float f = Mathf.PerlinNoise((x) / 35.0f, (y) / 35.0f);
+                float f2 = Mathf.PerlinNoise((x) / 2.54f, (y) / 2.54f);
+                float f3 = Mathf.PerlinNoise((x) / 0.11f, (y) / 0.11f);
+                f = f + f2 + f3;
+                f /= 3f;
+                if (f > treeThreshold) {
+                    if (Random.Range(0, 2) == 0) {
+                        go = Instantiate(Tree1);
+                    } else {
+                        go = Instantiate(Tree2);
+                    }
+                }
+                else if (f > bushThreshold) {
+                    //go = Instantiate(Bush1);
+                    if(Random.Range(0, 20) > 1) {
+                        go = Instantiate(Bush1);
+                    } else {
+                        go = Instantiate(Rock1);
+                    }
+                } 
+                //else if (f > rockThreshold) {
+                //    go = Instantiate(Rock1);
+                //} 
+                else if (f > grassThreshold) {
+                    go = Instantiate(Grass);
+                }
+
+                go.transform.position = new Vector3(x, 0, y) + new Vector3(0.5f, 0, 0.5f);//new Vector3(Random.Range(-0.6f, 0.6f), 0, Random.Range(-0.6f, 0.6f));
+                //go.transform.localScale = new Vector3(go.transform.localScale.x * Random.Range(0.8f, 1.4f),
+                //                                    go.transform.localScale.y * Random.Range(0.8f, 1.4f),
+                //                                    go.transform.localScale.z * Random.Range(0.8f, 1.4f));
+            }
+        }  
     }
 
     public NoiseSettings settings;
@@ -53,52 +110,81 @@ public class PerlinTest : MonoBehaviour {
     public int go = 2;
 
     void Update() {
-        //float[,] map = GetNoise(0, 0, size);
-        //float[,] map = GetTreeNoise(0, 0, size, go);
-        int[,] map = Noise.SimplePerlin(0, 0, size, otherBegin, multiplierIncrease, otherIncrease);
+        if (!spawnFoliage) {
+            //float[,] map = GetNoise(0, 0, size);
+            //float[,] map = GetTreeNoise(0, 0, size, go);
+            //int[,] map = Noise.SimplePerlin(0, 0, size, otherBegin, multiplierIncrease, otherIncrease);
 
-        //timer += Time.deltaTime * 5f;
-        //timer2 += Time.deltaTime * 0.1f;
+            float[,] map = new float[size, size];
 
-        //Vector2 v2 = new Vector2(timer, -timer);
-        //
-        //settings.offset = v2;
-        //settings.persistance = 0.1f + curve.Evaluate(timer2) * 0.5f;
-
-        //if (timer2 >= 1) {
-        //    timer2 -= 1;
-        //}
-
-        //float[,] map = Noise.GenerateNoiseMap(size, size, settings, Vector2.zero, Vector2.zero);
-
-        for (int y = 0; y < size; y++) {
-            for (int x = 0; x < size; x++) {
-                if (map[x, y] < lowest) {
-                    lowest = map[x, y];
-                }
-
-                if (map[x, y] > highest) {
-                    highest = map[x, y];
+            for (int y = 0; y < size; y++) {
+                for (int x = 0; x < size; x++) {
+                    float f = Mathf.PerlinNoise((x) / 35.0f, (y) / 35.0f);
+                    float f2 = Mathf.PerlinNoise(( x) / 2.54f, ( y) / 2.54f);
+                    float f3 = Mathf.PerlinNoise(( x) / 0.11f, ( y) / 0.11f);
+                    f = f + f2 + f3;
+                    f /= 3f;
+                    map[x, y] = f;
                 }
             }
-        }
 
-        for (int y = 0; y < size; y++) {
-            for (int x = 0; x < size; x++) {
-                float perc = Mathf.InverseLerp(lowest, highest, map[x, y]);
-                float r = map[x, y] == 1 || map[x, y] == 3 || map[x, y] == 5 || map[x, y] == 7 ? 1 : 0;
-                float g = map[x, y] == 2 || map[x, y] == 3 || map[x, y] == 6 || map[x, y] == 7 ? 1 : 0;
-                float b = map[x, y] == 4 || map[x, y] == 5 || map[x, y] == 6 || map[x, y] == 7 ? 1 : 0;
-                Color color = new Color(r, g, b);
-                //colors[(y * size) + x] = RedAt(color, perc);
-                //colors[(y * size) + x] = GetColor(perc);
-                colors[(y * size) + x] =color;
+            //timer += Time.deltaTime * 5f;
+            //timer2 += Time.deltaTime * 0.1f;
+
+            //Vector2 v2 = new Vector2(timer, -timer);
+            //
+            //settings.offset = v2;
+            //settings.persistance = 0.1f + curve.Evaluate(timer2) * 0.5f;
+
+            //if (timer2 >= 1) {
+            //    timer2 -= 1;
+            //}
+
+            //float[,] map = Noise.GenerateNoiseMap(size, size, settings, Vector2.zero, Vector2.zero);
+
+            for (int y = 0; y < size; y++) {
+                for (int x = 0; x < size; x++) {
+                    if (map[x, y] < lowest) {
+                        lowest = map[x, y];
+                    }
+
+                    if (map[x, y] > highest) {
+                        highest = map[x, y];
+                    }
+                }
             }
-        }
 
-        tex.SetPixels(colors);
-        tex.filterMode = FilterMode.Point;
-        tex.Apply();
+            for (int y = 0; y < size; y++) {
+                for (int x = 0; x < size; x++) {
+                    //float perc = Mathf.InverseLerp(lowest, highest, map[x, y]);
+                    //float r = map[x, y] == 1 || map[x, y] == 3 || map[x, y] == 5 || map[x, y] == 7 ? 1 : 0;
+                    //float g = map[x, y] == 2 || map[x, y] == 3 || map[x, y] == 6 || map[x, y] == 7 ? 1 : 0;
+                    //float b = map[x, y] == 4 || map[x, y] == 5 || map[x, y] == 6 || map[x, y] == 7 ? 1 : 0;
+                    //Color color = new Color(r, g, b);
+                    //colors[(y * size) + x] = RedAt(color, perc);
+                    //colors[(y * size) + x] = GetColor(perc);
+                    float f = map[x, y];
+                    if (f > treeThreshold) {
+                        colors[(y * size) + x] = Color.green;
+                    } else if (f > bushThreshold) {
+                        colors[(y * size) + x] = Color.yellow;
+                    } //else if (f > rockThreshold) {
+                        //colors[(y * size) + x] = new Color(1, 0.5f, 0);
+                    //} 
+                else if (f > grassThreshold) {
+                        colors[(y * size) + x] = Color.red;
+                    }
+                    else {
+                        colors[(y * size) + x] = Color.white;
+                    }
+                    //colors[(y * size) + x] = new Color(map[x, y], map[x, y], map[x, y]);
+                }
+            }
+
+            tex.SetPixels(colors);
+            tex.filterMode = FilterMode.Point;
+            tex.Apply();
+        }
     }
 
     int amount;

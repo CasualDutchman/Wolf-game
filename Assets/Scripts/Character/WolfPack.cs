@@ -5,6 +5,8 @@ using UnityEngine.UI;
 
 public class WolfPack : MonoBehaviour {
 
+    UIManager uimanager;
+
     [Header("Wolf Attributes")]
     public float health;
     public float maxhealth;
@@ -16,11 +18,11 @@ public class WolfPack : MonoBehaviour {
     public int experience;
     public int maxExperience;
 
-    [Header("UI")]
-    public Image healthbar;
-    public Image foodbar;
-    public Text levelText;
-    public Image experienceBar;
+    //[Header("UI")]
+    //public Image healthbar;
+    //public Image foodbar;
+    //public Text levelText;
+    //public Image experienceBar;
 
     [Header("Misc")]
     public float foodConsumptionInterval;
@@ -33,6 +35,8 @@ public class WolfPack : MonoBehaviour {
 	void Start () {
         health = maxhealth;
         food = maxFood;
+
+        uimanager = UIManager.instance;
 
         UpdateTexts();
         UpdateExperienceTexts();
@@ -61,20 +65,13 @@ public class WolfPack : MonoBehaviour {
 	}
 
     public void UpdateTexts() {
-        if (healthbar != null) {
-            healthbar.fillAmount = health / maxhealth;
-            foodbar.fillAmount = food / maxFood;
-            //healthText.text = health + "/" + maxhealth;
-            //foodText.text = food.ToString("F1") + "/" + maxFood;
-        }
+        uimanager.UpdateHealthBar(health / maxhealth);
+        uimanager.UpdateFoodBar(food / maxFood);
     }
 
     public void UpdateExperienceTexts() {
-        if (levelText != null) {
-            levelText.text = "Level: " + level.ToString();
-            experienceBar.fillAmount = (float)experience / (float)maxExperience;
-            //xpText.text = experience.ToString();
-        }
+        uimanager.UpdateExperienceBar((float)experience / (float)maxExperience);
+        uimanager.UpdateLevelText(level);
     }
 
     public void Damage(float amount) {
