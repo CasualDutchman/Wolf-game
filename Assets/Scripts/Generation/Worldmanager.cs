@@ -40,6 +40,9 @@ public class Worldmanager : MonoBehaviour {
 
     public IManager[] managers;
 
+    //[HideInInspector]
+    public Biome[] biomes;
+
     private void Awake() {
         instance = this;
 
@@ -149,6 +152,34 @@ public class Worldmanager : MonoBehaviour {
         GameObject go = Instantiate(treePrefab[prng.Next(treePrefab.Length)], parent);
 
         go.transform.localPosition = pos + new Vector3((prng.Next(0, 200) - 100) * 0.01f, 0f, (prng.Next(0, 200) - 100) * 0.015f);
+    }
+}
+
+[System.Serializable]
+public class Biome {
+    public string name = "New Biome";
+    public FoliageItem[] types;
+
+    public Biome Copy() {
+        Biome b = new Biome() {
+            name = this.name,
+            types = this.types
+        };
+        return b;
+    }
+}
+
+[System.Serializable]
+public class FoliageItem {
+    public bool isNothing = false;
+    public GameObject[] itemsToChoose;
+
+    public FoliageItem Copy() {
+        FoliageItem b = new FoliageItem() {
+            isNothing = this.isNothing,
+            itemsToChoose = this.itemsToChoose
+        };
+        return b;
     }
 }
 

@@ -246,10 +246,14 @@ public class PerlinTest : MonoBehaviour {
     }
 
     float GetValue(int x, int y) {
-        //int posX = x * 2;
-        //posX += Random.Range(0)
+        System.Random rng = new System.Random(x * y);
+        int posX = x * 2;
+        posX += rng.Next(2);
 
-        float value = map[x * 2, y * 2];
+        int posY = y * 2;
+        posY += rng.Next(2);
+
+        float value = map[posX, posY];
 
         return value;
     }
@@ -257,37 +261,14 @@ public class PerlinTest : MonoBehaviour {
     GameObject GetGameObject(float value) {
         GameObject[] gos = new GameObject[] { null, Grass, Rock1, Bush1, Tree1 };
 
-        float one = 1f / (float)gos.Length;
-
-        int i = 0;
-        for (int k = 0; k < gos.Length - 1; k++) {
-
-            if (value > one * k && value < one * (k + 1)) {
-                break;
-            }
-
-            i++;
-        }
-
-        return gos[i];
+        return gos[Mathf.FloorToInt(gos.Length * value)];
     }
 
     int amount;
     bool b;
 
     Color GetColor(float value) {
-        float one = 1f / (float)(colorPallete.Length);
-        int i = 0;
-        for (int k = 0; k < colorPallete.Length - 1; k++) {
-
-            if (value > one * k && value < one * (k + 1)) {
-                break;
-            }
-
-            i++;
-        }
-
-        return colorPallete[i];
+        return colorPallete[Mathf.FloorToInt(colorPallete.Length * value)];
     }
 
     Color RedAt(Color col, float above) {
