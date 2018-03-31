@@ -24,17 +24,27 @@ public class Noise {
         //return f > 0.4f || f < 0.1f;
     }
 
-    public static bool[,] GetTreeMap(int chunkX, int chunkY, int size) {
-        bool[,] noiseMap = new bool[size, size];
+    public static int[,] GetFoliageMap(int chunkX, int chunkY, int size, int length, AnimationCurve curve) {
+        int[,] noiseMap = new int[size, size];
 
         for (int y = 0; y < size; y++) {
             for (int x = 0; x < size; x++) {
-                float f = Mathf.PerlinNoise((chunkX + x) / 35.0f, (chunkY + y) / 35.0f);
-                float f2 = Mathf.PerlinNoise((chunkX + x) / 2.54f, (chunkY + y) / 2.54f);
-                float f3 = Mathf.PerlinNoise((chunkX + x) / 0.11f, (chunkY + y) / 0.11f);
-                f = f + f2 + f3;
-                f /= 3f;
-                noiseMap[x, y] = f > 0.5f;
+                float f = Mathf.PerlinNoise((chunkX + x) / 70.0f, (chunkY + y) / 70.0f);
+                float f2 = Mathf.PerlinNoise((chunkX + x) / 22.54f, (chunkY + y) / 22.54f);
+                float f3 = Mathf.PerlinNoise((chunkX + x) / 7.11f, (chunkY + y) / 7.11f);
+                float f4 = Mathf.PerlinNoise((chunkX + x) / 2.11f, (chunkY + y) / 2.11f);
+                f = (f) + (f2) + (f3 * 2.13f) + (f4);
+                f /= (1f + 1f + 1f + 2.13f);
+
+                if (f < 0)
+                    f = 0;
+
+                if (f >= 1)
+                    f = 0.999f;
+
+                float value = curve.Evaluate(f);
+
+                noiseMap[x, y] = Mathf.FloorToInt(length * value);
             }
         }
 

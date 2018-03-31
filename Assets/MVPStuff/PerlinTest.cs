@@ -48,14 +48,14 @@ public class PerlinTest : MonoBehaviour {
 
             GameObject go = GameObject.CreatePrimitive(PrimitiveType.Quad);
             go.transform.eulerAngles = new Vector3(90, 0, 0);
-            go.transform.position = new Vector3((size * 0.5f) * 0.5f, 0, (size * 0.5f) * 0.5f);
-            go.transform.localScale = Vector3.one * (size * 0.5f);
+            go.transform.position = new Vector3((size) * 0.5f, 0, (size) * 0.5f);
+            go.transform.localScale = Vector3.one * size;
             go.GetComponent<MeshRenderer>().material.mainTexture = tex;
 
             go = GameObject.CreatePrimitive(PrimitiveType.Quad);
             go.transform.eulerAngles = new Vector3(90, 0, 0);
-            go.transform.position = new Vector3(-(size * 0.5f) * 0.5f, 0, (size * 0.5f) * 0.5f);
-            go.transform.localScale = Vector3.one * (size * 0.5f);
+            go.transform.position = new Vector3(-(size) * 0.5f, 0, (size) * 0.5f);
+            go.transform.localScale = Vector3.one * size;
 
             //SpawnFoliage();
         } 
@@ -232,13 +232,13 @@ public class PerlinTest : MonoBehaviour {
 
         spawns.Clear();
 
-        for (int y = 0; y < size / 2; y++) {
-            for (int x = 0; x < size / 2; x++) {
+        for (int y = 0; y < size; y++) {
+            for (int x = 0; x < size; x++) {
                 GameObject g = GetGameObject(GetValue(x, y));
                 if (g != null) {
                     GameObject go = Instantiate(g);
 
-                    go.transform.position = new Vector3(-(size * 0.5f) + x, 0, y) + new Vector3(0.5f, 0, 0.5f);
+                    go.transform.position = new Vector3(-size + x, 0, y) + new Vector3(0.5f, 0, 0.5f);
                     spawns.Add(go.transform);
                 }
             }
@@ -247,11 +247,11 @@ public class PerlinTest : MonoBehaviour {
 
     float GetValue(int x, int y) {
         System.Random rng = new System.Random(x * y);
-        int posX = x * 2;
-        posX += rng.Next(2);
+        int posX = x;
+        //posX += rng.Next(2);
 
-        int posY = y * 2;
-        posY += rng.Next(2);
+        int posY = y;
+        //posY += rng.Next(2);
 
         float value = map[posX, posY];
 
@@ -261,6 +261,12 @@ public class PerlinTest : MonoBehaviour {
     GameObject GetGameObject(float value) {
         GameObject[] gos = new GameObject[] { null, Grass, Rock1, Bush1, Tree1 };
 
+        if (value <= 0)
+            value = 0.001f;
+
+        if (value >= 1)
+            value = 0.999f;
+
         return gos[Mathf.FloorToInt(gos.Length * value)];
     }
 
@@ -268,6 +274,12 @@ public class PerlinTest : MonoBehaviour {
     bool b;
 
     Color GetColor(float value) {
+        if (value <= 0)
+            value = 0.001f;
+
+        if (value >= 1)
+            value = 0.999f;
+
         return colorPallete[Mathf.FloorToInt(colorPallete.Length * value)];
     }
 

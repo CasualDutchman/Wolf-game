@@ -147,40 +147,28 @@ public class Worldmanager : MonoBehaviour {
             chunkDictionary.Add(v, g);
     }
 
-    public void PlaceTree(Vector3 pos, Transform parent) {
-        System.Random prng = new System.Random((int)(pos.x + pos.y + pos.z));
-        GameObject go = Instantiate(treePrefab[prng.Next(treePrefab.Length)], parent);
+    public void PlaceTree(Vector3 pos, Transform parent, int biomeID, int layerID) {
+        FoliageItem foliage = biomes[biomeID].types[layerID];
+        if (!foliage.isNothing) {
+            System.Random prng = new System.Random((int)(pos.x + pos.y * pos.z) + biomeID);
+            GameObject go = Instantiate(foliage.itemsToChoose[prng.Next(0, foliage.itemsToChoose.Length)], parent);
 
-        go.transform.localPosition = pos + new Vector3((prng.Next(0, 200) - 100) * 0.01f, 0f, (prng.Next(0, 200) - 100) * 0.015f);
+            go.transform.localPosition = pos + new Vector3((prng.Next(0, 200) - 100) * 0.001f, 0f, (prng.Next(0, 200) - 100) * 0.0015f);
+        }
     }
 }
 
 [System.Serializable]
 public class Biome {
     public string name = "New Biome";
-    public FoliageItem[] types;
-
-    public Biome Copy() {
-        Biome b = new Biome() {
-            name = this.name,
-            types = this.types
-        };
-        return b;
-    }
+    public AnimationCurve layerCurve = new AnimationCurve();
+    public FoliageItem[] types = new FoliageItem[] { new FoliageItem() };
 }
 
 [System.Serializable]
 public class FoliageItem {
     public bool isNothing = false;
-    public GameObject[] itemsToChoose;
-
-    public FoliageItem Copy() {
-        FoliageItem b = new FoliageItem() {
-            isNothing = this.isNothing,
-            itemsToChoose = this.itemsToChoose
-        };
-        return b;
-    }
+    public GameObject[] itemsToChoose = new GameObject[1];
 }
 
 public class Chunk {
@@ -190,7 +178,8 @@ public class Chunk {
     List<Vector2> uvs = new List<Vector2>();
     List<int> tris = new List<int>();
 
-    List<Vector3> treeLoc = new List<Vector3>();
+    Dictionary<Vector3, int> foliageMap = new Dictionary<Vector3, int>();
+    //List<Vector3> treeLoc = new List<Vector3>();
 
     System.Random rng;
 
@@ -255,7 +244,7 @@ public class Chunk {
         
         chunkSize = (int)(Worldmanager.instance.tileXY * Worldmanager.instance.tileScale);
 
-        bool[,] treemap = Noise.GetTreeMap((int)chunkPos.x * Worldmanager.instance.tileXY, (int)chunkPos.y * Worldmanager.instance.tileXY, chunkSize);
+        int[,] foliage = Noise.GetFoliageMap((int)chunkPos.x * Worldmanager.instance.tileXY, (int)chunkPos.y * Worldmanager.instance.tileXY, chunkSize, Worldmanager.instance.biomes[0].types.Length, Worldmanager.instance.biomes[0].layerCurve);
 
         for (int y = 0; y < chunkSize; y++) {
             for (int x = 0; x < chunkSize; x++) {
@@ -266,9 +255,11 @@ public class Chunk {
                 int posX = (int)(x / 2);
                 int posY = (int)(y / 2);
 
-                if (treemap[x, y]) {
-                    treeLoc.Add(new Vector3(beginX, map[posX, posY], beginY));
-                }
+                foliageMap.Add(new Vector3(beginX, map[posX, posY], beginY), foliage[x, y]);
+
+                //if (treemap[x, y]) {
+                //    treeLoc.Add(new Vector3(beginX, map[posX, posY], beginY));
+                //}
             }
         }
 
@@ -306,8 +297,8 @@ public class Chunk {
 
         meshRenderer.material = Worldmanager.instance.groundMaterial;
 
-        foreach (Vector3 loc in treeLoc) {
-            Worldmanager.instance.PlaceTree(loc, chunkObject.transform);
+        foreach (KeyValuePair<Vector3, int> foli in foliageMap) {
+            Worldmanager.instance.PlaceTree(foli.Key, chunkObject.transform, 0, foli.Value);
         }
 
         //Debug.Log("Chunk Done Loading");
@@ -320,7 +311,7 @@ public class Chunk {
         meshRenderer = null;
         meshCollider = null;
 
-        treeLoc.Clear();
+        foliageMap.Clear();
 
         int chunkInfo = Noise.GetChunkInfo((int)chunkPos.x, (int)chunkPos.y);
 

@@ -19,15 +19,23 @@ public class EditorWorldManager : Editor {
 
         GUILayout.BeginHorizontal();
         {
-            GUILayout.Label("Biomes", EditorStyles.boldLabel);
+            GUILayout.Label(new GUIContent("Biomes", "Biome contain all the information for spawning foliage"), EditorStyles.boldLabel);
 
-            if (GUILayout.Button(new GUIContent("+", "Expand or hide the World information"), EditorStyles.miniButtonLeft)) {
+            EditorGUILayout.Space();
+            EditorGUILayout.Space();
+            EditorGUILayout.Space();
+            EditorGUILayout.Space();
+
+            if (GUILayout.Button(new GUIContent("+", "Add Biome"), EditorStyles.miniButtonLeft)) {
+                Undo.RecordObject(worldmanager, "Add Biome");
                 AddBiome();
             }
 
-            if (GUILayout.Button(new GUIContent("-", "Expand or hide the World information"), EditorStyles.miniButtonRight)) {
-                if(worldmanager.biomes.Length > 1)
+            if (GUILayout.Button(new GUIContent("-", "Delete last Biome"), EditorStyles.miniButtonRight)) {
+                if (worldmanager.biomes.Length > 1) {
+                    Undo.RecordObject(worldmanager, "Delete last Biome");
                     DeleteBiome();
+                }
             }
         }
         GUILayout.EndHorizontal();
@@ -54,19 +62,28 @@ public class EditorWorldManager : Editor {
                 }
 
                 if (currentlyShowBiome == i) {
-                    if (GUILayout.Button(new GUIContent("+", "Expand or hide the World information"), EditorStyles.miniButtonMid)) {
+                    if (GUILayout.Button(new GUIContent("+", "Add layer to biome: " + worldmanager.biomes[i].name), EditorStyles.miniButtonMid)) {
+                        Undo.RecordObject(worldmanager, "Add layer to biome: " + worldmanager.biomes[i].name);
                         AddType(i);
                     }
 
-                    if (GUILayout.Button(new GUIContent("-", "Expand or hide the World information"), EditorStyles.miniButtonRight)) {
-                        if (worldmanager.biomes[i].types.Length > 1)
+                    if (GUILayout.Button(new GUIContent("-", "Delete last layer from biome: " + worldmanager.biomes[i].name), EditorStyles.miniButtonRight)) {
+                        if (worldmanager.biomes[i].types.Length > 1) {
+                            Undo.RecordObject(worldmanager, "Delete last layer from biome: " + worldmanager.biomes[i].name);
                             DeleteType(i);
+                        }
                     }
                 }
             }
             GUILayout.EndHorizontal();
 
             if (currentlyShowBiome == i) {
+                GUILayout.BeginHorizontal();
+                {
+                    GUILayout.Label(new GUIContent("Layer Curve", "This curve controls the spawning of the foliage in this biome. The curve gets devided into an equal amount of vertical parts, using the amount of layers provided. Looking at the curve X, it provides a Y value. This value is connected to the layers"));
+                    worldmanager.biomes[i].layerCurve = EditorGUI.CurveField(EditorGUILayout.GetControlRect(), worldmanager.biomes[i].layerCurve);
+                }
+                GUILayout.EndHorizontal();
                 /*
                 GUILayout.BeginHorizontal();
                 {
@@ -106,13 +123,16 @@ public class EditorWorldManager : Editor {
                 EditorGUILayout.Space();
 
                 if (!b.types[i].isNothing) {
-                    if (GUILayout.Button(new GUIContent("+", "Expand or hide the World information"), EditorStyles.miniButtonLeft)) {
+                    if (GUILayout.Button(new GUIContent("+", "Add object to layer " + i), EditorStyles.miniButtonLeft)) {
+                        Undo.RecordObject(worldmanager, "Add object to layer " + i);
                         AddFoliage(biomeID, i);
                     }
 
-                    if (GUILayout.Button(new GUIContent("-", "Expand or hide the World information"), EditorStyles.miniButtonRight)) {
-                        if (worldmanager.biomes[biomeID].types[i].itemsToChoose.Length > 1)
+                    if (GUILayout.Button(new GUIContent("-", "Delete last object from layer " + i), EditorStyles.miniButtonRight)) {
+                        if (worldmanager.biomes[biomeID].types[i].itemsToChoose.Length > 1) {
+                            Undo.RecordObject(worldmanager, "Delete last object from layer " + i);
                             DeleteFoliage(biomeID, i);
+                        }
                     }
                 }
             }
@@ -137,7 +157,7 @@ public class EditorWorldManager : Editor {
         GameObject[] gos2 = new GameObject[gos.Length + 1];
         for (int i = 0; i < gos2.Length; i++) {
             if (i == gos2.Length - 1) {
-                gos2[i] = gos[i - 1];
+                gos2[i] = null;
             } else {
                 gos2[i] = gos[i];
             }
@@ -159,7 +179,7 @@ public class EditorWorldManager : Editor {
         FoliageItem[] types2 = new FoliageItem[types.Length + 1];
         for (int i = 0; i < types2.Length; i++) {
             if (i == types2.Length - 1) {
-                types2[i] = types[i - 1].Copy();
+                types2[i] = new FoliageItem();// types[i - 1].Copy();
             } else {
                 types2[i] = types[i];
             }
@@ -181,7 +201,7 @@ public class EditorWorldManager : Editor {
         Biome[] biomes2 = new Biome[worldmanager.biomes.Length + 1];
         for (int i = 0; i < biomes2.Length; i++) {
             if (i == biomes2.Length - 1) {
-                biomes2[i] = biomes[i - 1].Copy();
+                biomes2[i] = new Biome();// biomes[i - 1].Copy();
             } else {
                 biomes2[i] = biomes[i];
             }
