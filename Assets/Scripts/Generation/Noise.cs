@@ -86,7 +86,7 @@ public class Noise {
                 float f = Mathf.PerlinNoise((chunkX + x) / 32.0f, (chunkY + y) / 32.0f);
                 float f2 = Mathf.PerlinNoise((chunkX + x) / 8.5f, (chunkY + y) / 8.5f);
                 f = f + f2;
-                //f /= 2f;
+                //f *= 2f;
                 noiseMap[x, y] = f;
             }
         }

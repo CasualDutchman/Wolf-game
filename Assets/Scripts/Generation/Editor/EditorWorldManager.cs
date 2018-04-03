@@ -24,6 +24,92 @@ public class EditorWorldManager : Editor {
         if (currentlyShowBiome >= worldmanager.biomes.Length)
             currentlyShowBiome = -1;
 
+        GUILayout.BeginVertical();
+        {
+            GUILayout.Label(new GUIContent("World Slider", "Sliders for the world's generation"), EditorStyles.boldLabel);
+
+            GUILayout.BeginHorizontal();
+            {
+                GUILayout.Label("Foliage", EditorStyles.boldLabel, GUILayout.MaxWidth(100));
+                GUILayout.Label("XL");
+                GUILayout.Label("L");
+                GUILayout.Label("M");
+                GUILayout.Label("S");
+            }
+            GUILayout.EndHorizontal();
+
+            GUILayout.BeginHorizontal();
+            {
+                EditorGUI.BeginChangeCheck();
+
+                GUILayout.Label("Perlin", GUILayout.MaxWidth(100));
+                float f1 = GUILayout.HorizontalSlider(worldmanager.perlin1, 50f, 100f);
+                float f2 = GUILayout.HorizontalSlider(worldmanager.perlin2, 25f, 75f);
+                float f3 = GUILayout.HorizontalSlider(worldmanager.perlin3, 10f, 50f);
+                float f4 = GUILayout.HorizontalSlider(worldmanager.perlin4, 2f, 10f);
+                if (EditorGUI.EndChangeCheck()) {
+                    Undo.RecordObject(worldmanager, "Change Perlin");
+
+                    worldmanager.perlin1 = f1;
+                    worldmanager.perlin2 = f2;
+                    worldmanager.perlin3 = f3;
+                    worldmanager.perlin4 = f4;
+
+                    if (debug)
+                        DisplayDebugInfo(debug);
+                }
+            }
+            GUILayout.EndHorizontal();
+
+            if (debug) {
+                GUILayout.BeginHorizontal();
+                {
+                    GUILayout.Space(100);
+                    GUILayout.Label(worldmanager.perlin1.ToString("F4"));
+                    GUILayout.Label(worldmanager.perlin2.ToString("F4"));
+                    GUILayout.Label(worldmanager.perlin3.ToString("F4"));
+                    GUILayout.Label(worldmanager.perlin4.ToString("F4"));
+                }
+                GUILayout.EndHorizontal();
+            }
+
+            GUILayout.BeginHorizontal();
+            {
+                EditorGUI.BeginChangeCheck();
+
+                GUILayout.Label("Multiplier", GUILayout.MaxWidth(100));
+                float f1 = GUILayout.HorizontalSlider(worldmanager.perlin1Multiplier, 1f, 10f);
+                float f2 = GUILayout.HorizontalSlider(worldmanager.perlin2Multiplier, 1f, 10f);
+                float f3 = GUILayout.HorizontalSlider(worldmanager.perlin3Multiplier, 1f, 10f);
+                float f4 = GUILayout.HorizontalSlider(worldmanager.perlin4Multiplier, 1f, 10f);
+                if (EditorGUI.EndChangeCheck()) {
+                    Undo.RecordObject(worldmanager, "Change Multiplier");
+
+                    worldmanager.perlin1Multiplier = f1;
+                    worldmanager.perlin2Multiplier = f2;
+                    worldmanager.perlin3Multiplier = f3;
+                    worldmanager.perlin4Multiplier = f4;
+
+                    if (debug)
+                        DisplayDebugInfo(debug);
+                }
+            }
+            GUILayout.EndHorizontal();
+
+            if (debug) {
+                GUILayout.BeginHorizontal();
+                {
+                    GUILayout.Space(100);
+                    GUILayout.Label(worldmanager.perlin1Multiplier.ToString("F2"));
+                    GUILayout.Label(worldmanager.perlin2Multiplier.ToString("F2"));
+                    GUILayout.Label(worldmanager.perlin3Multiplier.ToString("F2"));
+                    GUILayout.Label(worldmanager.perlin4Multiplier.ToString("F2"));
+                }
+                GUILayout.EndHorizontal();
+            }
+        }
+        GUILayout.EndVertical();
+
         GUILayout.BeginHorizontal();
         {
             GUILayout.Label(new GUIContent("Biomes", "Biome contain all the information for spawning foliage"), EditorStyles.boldLabel);
@@ -55,16 +141,7 @@ public class EditorWorldManager : Editor {
             }
 
             if (tex != null && debug) {
-                EditorGUI.BeginChangeCheck();
 
-                if (EditorGUI.EndChangeCheck()) {
-                    Undo.RecordObject(worldmanager, "Change debug values");
-                    DisplayDebugInfo(true);
-                }
-                //Rect rect = EditorGUILayout.GetControlRect();
-                //rect.height = 100;
-                //GUI.DrawTexture(rect, tex, ScaleMode.ScaleToFit);
-                //GUILayout.Space(100);
                 GUILayout.Label(tex);
             }
         }
@@ -75,13 +152,15 @@ public class EditorWorldManager : Editor {
     int scale = 4;
 
     void DisplayDebugInfo(bool show) {
-        if (show) {
+        if (show && currentlyShowBiome >= 0) {
             tex = new Texture2D(size * scale, size * scale) {
                 filterMode = FilterMode.Point
             };
 
-            int max = worldmanager.biomes[0].types.Length;
-            int[,] iArr = Noise.GetFoliageMap(0, 0, size * scale, max, worldmanager.biomes[0].layerCurve,
+            Biome biome = worldmanager.biomes[currentlyShowBiome];
+
+            int max = biome.types.Length;
+            int[,] iArr = Noise.GetFoliageMap(0, 0, size * scale, max, biome.layerCurve,
                 worldmanager.perlin1, worldmanager.perlin2, worldmanager.perlin3, worldmanager.perlin4,
                 worldmanager.perlin1Multiplier, worldmanager.perlin2Multiplier, worldmanager.perlin3Multiplier, worldmanager.perlin4Multiplier);
 
@@ -114,6 +193,8 @@ public class EditorWorldManager : Editor {
 
                 if (GUILayout.Button(new GUIContent(currentlyShowBiome == i ? "Hide" : "Expand", "Expand or hide"), EditorStyles.miniButtonLeft)) {
                     currentlyShowBiome = currentlyShowBiome == i ? -1 : i;
+                    if (debug)
+                        DisplayDebugInfo(debug);
                 }
 
                 if (currentlyShowBiome == i) {
@@ -146,7 +227,7 @@ public class EditorWorldManager : Editor {
                         Undo.RecordObject(worldmanager, "change biome Curve");
                         worldmanager.biomes[i].layerCurve = tempcurve;
                         if (debug) {
-                            DisplayDebugInfo(true);
+                            DisplayDebugInfo(debug);
                         }
                     }
                 }

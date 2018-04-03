@@ -43,22 +43,14 @@ public class Worldmanager : MonoBehaviour {
     [HideInInspector]
     public Biome[] biomes;
 
-    [Range(1f, 100f)]
     public float perlin1 = 1f;
-    [Range(1f, 80f)]
     public float perlin2 = 1f;
-    [Range(1f, 60f)]
     public float perlin3 = 1f;
-    [Range(1f, 40f)]
     public float perlin4 = 1f;
 
-    [Range(1f, 10f)]
     public float perlin1Multiplier = 1f;
-    [Range(1f, 10f)]
     public float perlin2Multiplier = 1f;
-    [Range(1f, 10f)]
     public float perlin3Multiplier = 1f;
-    [Range(1f, 10f)]
     public float perlin4Multiplier = 1f;
 
     private void Awake() {
@@ -171,8 +163,10 @@ public class Worldmanager : MonoBehaviour {
             System.Random prng = new System.Random((int)(pos.x + pos.y * pos.z) + biomeID);
             GameObject go = Instantiate(foliage.itemsToChoose[prng.Next(0, foliage.itemsToChoose.Length)], parent);
 
-            float newx = (int)pos.y % 2 == 0 ? 0 : 0.5f;
+            float newx = (int)pos.z % 2 == 0 ? 0 : 0.5f;
             go.transform.localPosition = pos + new Vector3((prng.Next(0, 200) - 100) * 0.001f + newx, 0f, (prng.Next(0, 200) - 100) * 0.0015f);
+
+            go.transform.localEulerAngles = new Vector3(-90, 0, (prng.Next(0, 30) - 15));
         }
     }
 }
