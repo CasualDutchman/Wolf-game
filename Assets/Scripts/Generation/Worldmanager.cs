@@ -40,8 +40,26 @@ public class Worldmanager : MonoBehaviour {
 
     public IManager[] managers;
 
-    //[HideInInspector]
+    [HideInInspector]
     public Biome[] biomes;
+
+    [Range(1f, 100f)]
+    public float perlin1 = 1f;
+    [Range(1f, 80f)]
+    public float perlin2 = 1f;
+    [Range(1f, 60f)]
+    public float perlin3 = 1f;
+    [Range(1f, 40f)]
+    public float perlin4 = 1f;
+
+    [Range(1f, 10f)]
+    public float perlin1Multiplier = 1f;
+    [Range(1f, 10f)]
+    public float perlin2Multiplier = 1f;
+    [Range(1f, 10f)]
+    public float perlin3Multiplier = 1f;
+    [Range(1f, 10f)]
+    public float perlin4Multiplier = 1f;
 
     private void Awake() {
         instance = this;
@@ -153,7 +171,8 @@ public class Worldmanager : MonoBehaviour {
             System.Random prng = new System.Random((int)(pos.x + pos.y * pos.z) + biomeID);
             GameObject go = Instantiate(foliage.itemsToChoose[prng.Next(0, foliage.itemsToChoose.Length)], parent);
 
-            go.transform.localPosition = pos + new Vector3((prng.Next(0, 200) - 100) * 0.001f, 0f, (prng.Next(0, 200) - 100) * 0.0015f);
+            float newx = (int)pos.y % 2 == 0 ? 0 : 0.5f;
+            go.transform.localPosition = pos + new Vector3((prng.Next(0, 200) - 100) * 0.001f + newx, 0f, (prng.Next(0, 200) - 100) * 0.0015f);
         }
     }
 }
@@ -244,8 +263,10 @@ public class Chunk {
         
         chunkSize = (int)(Worldmanager.instance.tileXY * Worldmanager.instance.tileScale);
 
-        int[,] foliage = Noise.GetFoliageMap((int)chunkPos.x * Worldmanager.instance.tileXY, (int)chunkPos.y * Worldmanager.instance.tileXY, chunkSize, Worldmanager.instance.biomes[0].types.Length, Worldmanager.instance.biomes[0].layerCurve);
-
+        int[,] foliage = Noise.GetFoliageMap((int)chunkPos.x * Worldmanager.instance.tileXY, (int)chunkPos.y * Worldmanager.instance.tileXY, chunkSize, Worldmanager.instance.biomes[0].types.Length, Worldmanager.instance.biomes[0].layerCurve,
+            Worldmanager.instance.perlin1, Worldmanager.instance.perlin2, Worldmanager.instance.perlin3, Worldmanager.instance.perlin4,
+            Worldmanager.instance.perlin1Multiplier, Worldmanager.instance.perlin2Multiplier, Worldmanager.instance.perlin3Multiplier, Worldmanager.instance.perlin4Multiplier);
+    
         for (int y = 0; y < chunkSize; y++) {
             for (int x = 0; x < chunkSize; x++) {
 

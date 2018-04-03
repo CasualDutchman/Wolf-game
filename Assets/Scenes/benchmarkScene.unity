@@ -988,22 +988,34 @@ MonoBehaviour:
         outSlope: 2
         tangentMode: 0
       - serializedVersion: 2
-        time: 0.3141045
-        value: 0.9735301
+        time: 0.24506785
+        value: 0.96900505
         inSlope: 0.101327896
         outSlope: 0.101327896
         tangentMode: 0
       - serializedVersion: 2
-        time: 0.5873458
-        value: 0.6409125
-        inSlope: 0.3750342
-        outSlope: 0.3750342
+        time: 0.3576008
+        value: 0.8830248
+        inSlope: -0.14721428
+        outSlope: -0.14721428
         tangentMode: 0
       - serializedVersion: 2
-        time: 0.71034575
-        value: 0.13573857
+        time: 0.4613456
+        value: 0.1810042
         inSlope: -1.3228399
         outSlope: -1.3228399
+        tangentMode: 0
+      - serializedVersion: 2
+        time: 0.5762517
+        value: 0.43785128
+        inSlope: -1.6070344
+        outSlope: -1.6070344
+        tangentMode: 0
+      - serializedVersion: 2
+        time: 0.65180755
+        value: 0.14889984
+        inSlope: -0.07546621
+        outSlope: -0.07546621
         tangentMode: 0
       - serializedVersion: 2
         time: 0.9970703
@@ -1024,6 +1036,7 @@ MonoBehaviour:
     - isNothing: 0
       itemsToChoose:
       - {fileID: 1119207435159362, guid: c889c4e4bd5a99a418cfa63f2b187482, type: 2}
+      - {fileID: 1129987843589544, guid: 7e95ef24c0d367d43b530e63056d01d4, type: 2}
     - isNothing: 0
       itemsToChoose:
       - {fileID: 1129987843589544, guid: 7e95ef24c0d367d43b530e63056d01d4, type: 2}
@@ -1032,6 +1045,9 @@ MonoBehaviour:
       - {fileID: 1359906261778406, guid: 23e117bd77de49d46b5ee5879cfde161, type: 2}
       - {fileID: 1200608088923024, guid: a05e720165d85d84ab234adac273ea4e, type: 2}
       - {fileID: 1581873198382428, guid: 119ec9826773cb64d89aa8dc21e1e6ad, type: 2}
+    - isNothing: 0
+      itemsToChoose:
+      - {fileID: 0}
   - name: Planes
     layerCurve:
       serializedVersion: 2
@@ -1120,6 +1136,20 @@ MonoBehaviour:
     - isNothing: 0
       itemsToChoose:
       - {fileID: 1119207435159362, guid: c889c4e4bd5a99a418cfa63f2b187482, type: 2}
+    - isNothing: 0
+      itemsToChoose:
+      - {fileID: 0}
+    - isNothing: 0
+      itemsToChoose:
+      - {fileID: 1200608088923024, guid: a05e720165d85d84ab234adac273ea4e, type: 2}
+  perlin1: 39.4
+  perlin2: 32.6
+  perlin3: 22.5
+  perlin4: 12.5
+  perlin1Multiplier: 1.58
+  perlin2Multiplier: 2.16
+  perlin3Multiplier: 2.8
+  perlin4Multiplier: 2.32
 --- !u!4 &1248966340
 Transform:
   m_ObjectHideFlags: 0
@@ -1438,7 +1468,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1517269661
 RectTransform:
   m_ObjectHideFlags: 0
@@ -2227,7 +2257,7 @@ Camera:
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
-    m_Bits: 4294967295
+    m_Bits: 4294967039
   m_RenderingPath: 1
   m_TargetTexture: {fileID: 0}
   m_TargetDisplay: 0

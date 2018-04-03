@@ -51,6 +51,33 @@ public class Noise {
         return noiseMap;
     }
 
+    public static int[,] GetFoliageMap(int chunkX, int chunkY, int size, int length, AnimationCurve curve, float r1, float r2, float r3, float r4, float p1, float p2, float p3, float p4) {
+        int[,] noiseMap = new int[size, size];
+
+        for (int y = 0; y < size; y++) {
+            for (int x = 0; x < size; x++) {
+                float f = Mathf.PerlinNoise((chunkX + x) / r1, (chunkY + y) / r1);
+                float f2 = Mathf.PerlinNoise((chunkX + x) / r2, (chunkY + y) / r2);
+                float f3 = Mathf.PerlinNoise((chunkX + x) / r3, (chunkY + y) / r3);
+                float f4 = Mathf.PerlinNoise((chunkX + x) / r4, (chunkY + y) / r4);
+                f = (f * p1) + (f2 * p2) + (f3 * p3) + (f4 * p4);
+                f /= (p1 + p2 + p3 + p4);
+
+                if (f < 0)
+                    f = 0.001f;
+
+                if (f >= 1)
+                    f = 0.999f;
+
+                float value = curve.Evaluate(f);
+
+                noiseMap[x, y] = Mathf.FloorToInt(length * value);
+            }
+        }
+
+        return noiseMap;
+    }
+
     public static float[,] GetHeightMap(int chunkX, int chunkY, int size) {
         float[,] noiseMap = new float[size, size];
 
