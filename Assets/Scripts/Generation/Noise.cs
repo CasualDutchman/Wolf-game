@@ -71,6 +71,12 @@ public class Noise {
 
                 float value = curve.Evaluate(f);
 
+                if (value < 0)
+                    value = 0.001f;
+
+                if (value >= 1)
+                    value = 0.999f;
+
                 noiseMap[x, y] = Mathf.FloorToInt(length * value);
             }
         }

@@ -1,0 +1,57 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 380cef48b807ce342b8b7188098c7268, type: 3}
+  m_Name: Perlin1
+  m_EditorClassIdentifier: 
+  curve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 2
+      time: 0
+      value: 0
+      inSlope: 2
+      outSlope: 2
+      tangentMode: 0
+    - serializedVersion: 2
+      time: 0.3141045
+      value: 0.9735301
+      inSlope: 0.101327896
+      outSlope: 0.101327896
+      tangentMode: 0
+    - serializedVersion: 2
+      time: 0.40381306
+      value: 0.6378607
+      inSlope: 0.3750342
+      outSlope: 0.3750342
+      tangentMode: 0
+    - serializedVersion: 2
+      time: 0.63085514
+      value: 0.20576216
+      inSlope: -1.3228399
+      outSlope: -1.3228399
+      tangentMode: 0
+    - serializedVersion: 2
+      time: 0.9970703
+      value: -0.0037555695
+      inSlope: -2.1420658
+      outSlope: -2.1420658
+      tangentMode: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 0
+  perlin1: 59.5
+  perlin2: 18.5
+  perlin3: 22.8
+  perlin4: 3.96
+  multiplier1: 1
+  multiplier2: 1
+  multiplier3: 1
+  multiplier4: 1

@@ -40,7 +40,6 @@ public class Worldmanager : MonoBehaviour {
 
     public IManager[] managers;
 
-    [HideInInspector]
     public Biome[] biomes;
 
     public float perlin1 = 1f;
@@ -169,19 +168,6 @@ public class Worldmanager : MonoBehaviour {
             go.transform.localEulerAngles = new Vector3(-90, 0, (prng.Next(0, 30) - 15));
         }
     }
-}
-
-[System.Serializable]
-public class Biome {
-    public string name = "New Biome";
-    public AnimationCurve layerCurve = new AnimationCurve();
-    public FoliageItem[] types = new FoliageItem[] { new FoliageItem() };
-}
-
-[System.Serializable]
-public class FoliageItem {
-    public bool isNothing = false;
-    public GameObject[] itemsToChoose = new GameObject[1];
 }
 
 public class Chunk {
