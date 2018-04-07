@@ -2,8 +2,8 @@
 {
 	Properties
 	{
-		_MainTex ("Summer Texture", 2D) = "white" {}
-		_MainTex2 ("Spring Texture", 2D) = "white" {}
+		_MainTex ("Spring Texture", 2D) = "white" {}
+		_MainTex2 ("Summer Texture", 2D) = "white" {}
 		_MainTex3 ("Fall Texture", 2D) = "white" {}
 		_MainTex4 ("Winter Texture", 2D) = "white" {}
 		_Blend("Texture Blend", Range(0,4)) = 0.0

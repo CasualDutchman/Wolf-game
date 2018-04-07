@@ -7,6 +7,10 @@ public class Worldmanager : MonoBehaviour {
 
     public static Worldmanager instance;
 
+    [Range(0, 4f)]
+    public float blend = 0;
+    public Material mat;
+
     public GameObject[] treePrefab;
 
     public Transform target;
@@ -42,16 +46,6 @@ public class Worldmanager : MonoBehaviour {
 
     public Biome[] biomes;
 
-    public float perlin1 = 1f;
-    public float perlin2 = 1f;
-    public float perlin3 = 1f;
-    public float perlin4 = 1f;
-
-    public float perlin1Multiplier = 1f;
-    public float perlin2Multiplier = 1f;
-    public float perlin3Multiplier = 1f;
-    public float perlin4Multiplier = 1f;
-
     private void Awake() {
         instance = this;
 
@@ -67,6 +61,9 @@ public class Worldmanager : MonoBehaviour {
 
     void Update () {
         Vector2 newChunkPos = new Vector2(Mathf.FloorToInt(target.position.x / TileSize), Mathf.FloorToInt(target.position.z / TileSize));
+
+        //if(mat != null)
+            //mat.SetFloat("_Blend", blend);
 
         if (!generating && chunksToUpdate.Count > 0) {
                 generationThread = new Thread(chunksToUpdate[0].GenerateData);
@@ -243,9 +240,9 @@ public class Chunk {
         
         chunkSize = (int)(Worldmanager.instance.tileXY * Worldmanager.instance.tileScale);
 
-        int[,] foliage = Noise.GetFoliageMap((int)chunkPos.x * Worldmanager.instance.tileXY, (int)chunkPos.y * Worldmanager.instance.tileXY, chunkSize, Worldmanager.instance.biomes[0].types.Length, Worldmanager.instance.biomes[0].layerCurve,
-            Worldmanager.instance.perlin1, Worldmanager.instance.perlin2, Worldmanager.instance.perlin3, Worldmanager.instance.perlin4,
-            Worldmanager.instance.perlin1Multiplier, Worldmanager.instance.perlin2Multiplier, Worldmanager.instance.perlin3Multiplier, Worldmanager.instance.perlin4Multiplier);
+        int[,] foliage = Worldmanager.instance.biomes[0].settings.GetPerlinMapInt((int)chunkPos.x * Worldmanager.instance.tileXY, (int)chunkPos.y * Worldmanager.instance.tileXY, chunkSize, Worldmanager.instance.biomes[0].types.Length);//Noise.GetFoliageMap((int)chunkPos.x * Worldmanager.instance.tileXY, (int)chunkPos.y * Worldmanager.instance.tileXY, chunkSize, Worldmanager.instance.biomes[0].types.Length, Worldmanager.instance.biomes[0].layerCurve,
+            //Worldmanager.instance.perlin1, Worldmanager.instance.perlin2, Worldmanager.instance.perlin3, Worldmanager.instance.perlin4,
+            //Worldmanager.instance.perlin1Multiplier, Worldmanager.instance.perlin2Multiplier, Worldmanager.instance.perlin3Multiplier, Worldmanager.instance.perlin4Multiplier);
     
         for (int y = 0; y < chunkSize; y++) {
             for (int x = 0; x < chunkSize; x++) {
