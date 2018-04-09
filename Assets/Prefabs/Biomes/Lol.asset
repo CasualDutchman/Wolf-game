@@ -11,13 +11,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8edc7580550cc9e4ab042d4c4b80cc84, type: 3}
   m_Name: Lol
   m_EditorClassIdentifier: 
-  settings: {fileID: 11400000, guid: a182e55c67686594a86aa2fdadee6030, type: 2}
-  layerCurve:
+  curve:
     serializedVersion: 2
     m_Curve: []
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+  settings: {fileID: 11400000, guid: a182e55c67686594a86aa2fdadee6030, type: 2}
   types:
   - isNothing: 1
     itemsToChoose:

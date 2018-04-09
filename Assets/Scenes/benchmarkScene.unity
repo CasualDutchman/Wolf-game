@@ -2600,12 +2600,13 @@ MonoBehaviour:
   target: {fileID: 2054463265}
   tileXY: 7
   tileScale: 2
-  groundMaterial: {fileID: 2100000, guid: 9799519c786631a498b183f821584d3d, type: 2}
+  groundMaterial: {fileID: 2100000, guid: f652e258d97f79b48ae23b865dc34d05, type: 2}
   updated: 0
   generating: 0
   loadingUI: {fileID: 574895741}
   progressbar: {fileID: 1374494819}
   showLoadingScreen: 1
+  terrainPerlin: {fileID: 11400000, guid: 0c13cd867ab0e2d44bdb441df19bfe32, type: 2}
   biomes:
   - {fileID: 11400000, guid: 6ac40c0689258d04e92c561287f86b29, type: 2}
   - {fileID: 11400000, guid: 199def1da51dd7349b569d98970092be, type: 2}
@@ -3368,7 +3369,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1517269661
 RectTransform:
   m_ObjectHideFlags: 0

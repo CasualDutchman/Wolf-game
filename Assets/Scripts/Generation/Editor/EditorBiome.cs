@@ -9,6 +9,7 @@ public class EditorBiome : Editor {
     Biome biome;
 
     Texture2D debugTex;
+    bool editPerlinSettings = false;
 
     void OnEnable() {
         biome = (Biome)target;
@@ -25,7 +26,25 @@ public class EditorBiome : Editor {
             GUILayout.BeginHorizontal();
             {
                 GUILayout.Label(biome.name, EditorStyles.boldLabel);
+            }
+            GUILayout.EndHorizontal();
 
+            GUILayout.BeginHorizontal();
+            {
+                GUILayout.Label("Curve", GUILayout.MaxWidth(90));
+                EditorGUI.BeginChangeCheck();
+                AnimationCurve tempc = EditorGUILayout.CurveField(biome.curve);
+                if (EditorGUI.EndChangeCheck()) {
+                    biome.curve = tempc;
+                    UpdateDebugInfo();
+                }
+            }
+            GUILayout.EndHorizontal();
+
+            GUILayout.BeginHorizontal();
+            {
+                EditorGUILayout.Space();
+                EditorGUILayout.Space();
                 EditorGUILayout.Space();
                 EditorGUILayout.Space();
 
@@ -56,27 +75,104 @@ public class EditorBiome : Editor {
             for (int i1 = 0; i1 < biome.types.Length; i1++) {
                 BiomeTypeLabel(i1);
             }
+        
+
+            EditorGUILayout.Space();
+
+            EditorGUI.BeginChangeCheck();
+            PerlinSettings temp = (PerlinSettings)EditorGUILayout.ObjectField(biome.settings, typeof(PerlinSettings), false);
+            if (EditorGUI.EndChangeCheck()) {
+                biome.settings = temp;
+                UpdateDebugInfo();
+            }
+            if (debugTex != null && biome.settings != null) {
+
+                GUILayout.BeginHorizontal();
+                {
+                    GUILayout.FlexibleSpace();
+                    GUILayout.Label(debugTex);
+                    GUILayout.FlexibleSpace();
+                }
+                GUILayout.EndHorizontal();
+
+                EditorGUI.BeginChangeCheck();
+                bool b = GUILayout.Toggle(editPerlinSettings, "Edit Perlin Settings");
+                if (EditorGUI.EndChangeCheck()) {
+                    Undo.RecordObject(biome, "Toggle biome layer");
+                    editPerlinSettings = b;
+                }
+
+                if (editPerlinSettings) {
+                    EditorGUI.BeginChangeCheck();
+
+                    PerlinSett();
+
+                    if (EditorGUI.EndChangeCheck()) {
+                        Undo.RecordObject(biome, "Toggle biome layer");
+                        UpdateDebugInfo();
+                    }
+                }
+            }
         }
         GUILayout.EndVertical();
+    }
 
-        EditorGUILayout.Space();
-
-        EditorGUI.BeginChangeCheck();
-        PerlinSettings temp = (PerlinSettings)EditorGUILayout.ObjectField(biome.settings, typeof(PerlinSettings), false);
-        if (EditorGUI.EndChangeCheck()) {
-            biome.settings = temp;
-            UpdateDebugInfo();
+    void PerlinSett() {
+        GUILayout.BeginHorizontal();
+        {
+            GUILayout.Label("Perlin 1", GUILayout.MaxWidth(90));
+            biome.settings.perlin1 = EditorGUILayout.Slider(biome.settings.perlin1, 1, 100);
         }
-        if (debugTex != null && biome.settings != null) {
+        GUILayout.EndHorizontal();
 
-            GUILayout.BeginHorizontal();
-            {
-                GUILayout.FlexibleSpace();
-                GUILayout.Label(debugTex);
-                GUILayout.FlexibleSpace();
-            }
-            GUILayout.EndHorizontal();
+        GUILayout.BeginHorizontal();
+        {
+            GUILayout.Label("Perlin 2", GUILayout.MaxWidth(90));
+            biome.settings.perlin2 = EditorGUILayout.Slider(biome.settings.perlin2, 1, 100);
         }
+        GUILayout.EndHorizontal();
+
+        GUILayout.BeginHorizontal();
+        {
+            GUILayout.Label("Perlin 3", GUILayout.MaxWidth(90));
+            biome.settings.perlin3 = EditorGUILayout.Slider(biome.settings.perlin3, 1, 100);
+        }
+        GUILayout.EndHorizontal();
+
+        GUILayout.BeginHorizontal();
+        {
+            GUILayout.Label("Perlin 4", GUILayout.MaxWidth(90));
+            biome.settings.perlin4 = EditorGUILayout.Slider(biome.settings.perlin4, 1, 100);
+        }
+        GUILayout.EndHorizontal();
+
+        GUILayout.BeginHorizontal();
+        {
+            GUILayout.Label("Multiplier 1", GUILayout.MaxWidth(90));
+            biome.settings.multiplier1 = EditorGUILayout.Slider(biome.settings.multiplier1, 0.1f, 10);
+        }
+        GUILayout.EndHorizontal();
+
+        GUILayout.BeginHorizontal();
+        {
+            GUILayout.Label("Multiplier 2", GUILayout.MaxWidth(90));
+            biome.settings.multiplier2 = EditorGUILayout.Slider(biome.settings.multiplier2, 0.1f, 10);
+        }
+        GUILayout.EndHorizontal();
+
+        GUILayout.BeginHorizontal();
+        {
+            GUILayout.Label("Multiplier 3", GUILayout.MaxWidth(90));
+            biome.settings.multiplier3 = EditorGUILayout.Slider(biome.settings.multiplier3, 0.1f, 10);
+        }
+        GUILayout.EndHorizontal();
+
+        GUILayout.BeginHorizontal();
+        {
+            GUILayout.Label("Multiplier 4", GUILayout.MaxWidth(90));
+            biome.settings.multiplier4 = EditorGUILayout.Slider(biome.settings.multiplier4, 0.1f, 10);
+        }
+        GUILayout.EndHorizontal();
     }
 
     Color[] colors = new Color[] { new Color(1, 0, 0), new Color(1, 0.5f, 0), new Color(1, 1, 0), new Color(0.5f, 1, 0), new Color(0, 1, 0), new Color(0, 1, 0.5f),
@@ -148,14 +244,13 @@ public class EditorBiome : Editor {
     }
 
     void UpdateDebugInfo() {
+        EditorUtility.SetDirty(biome);
+
         if (biome.settings == null)
             return;
 
         int size = 48;
         int scale = 4;
-
-        //float f1 = 70f, f2 = 40f, f3 = 15f, f4 = 3f;
-        //float r1 = 1f, r2 = 1.5f, r3 = 3f, r4 = 1.1f;
 
         if (debugTex == null) {
             debugTex = new Texture2D(size * scale, size * scale) {
@@ -164,9 +259,7 @@ public class EditorBiome : Editor {
         }
 
         int max = biome.types.Length;
-        int[,] iArr = biome.settings.GetPerlinMapInt(0, 0, size, max); //Noise.GetFoliageMap(0, 0, size * scale, max, biome.layerCurve,
-            //f1, f2, f3, f4,
-            //r1, r2, r3, r4);
+        int[,] iArr = biome.settings.GetPerlinMapInt(0, 0, size, max, biome.curve);
 
         Color[] colorss = new Color[(size * scale) * (size * scale)];
         for (int y = 0; y < size * scale; y++) {

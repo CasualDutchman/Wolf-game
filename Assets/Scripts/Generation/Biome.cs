@@ -4,8 +4,8 @@ using UnityEngine;
 
 [CreateAssetMenu(fileName = "Biome", menuName = "Generation/Biome", order = 1)]
 public class Biome : ScriptableObject {
+    public AnimationCurve curve = new AnimationCurve();
     public PerlinSettings settings;
-    public AnimationCurve layerCurve = new AnimationCurve();
     public FoliageItem[] types = new FoliageItem[] { new FoliageItem() };
 }
 

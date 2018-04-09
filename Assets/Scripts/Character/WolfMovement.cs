@@ -27,10 +27,10 @@ public class WolfMovement : MonoBehaviour {
             transform.rotation = Quaternion.LookRotation(look);
         }
 
-        Ray ray = new Ray(transform.position + (Vector3.up * 3), Vector3.down);
+        Ray ray = new Ray(transform.position + (Vector3.up * 10), Vector3.down);
         RaycastHit hit;
 
-        if (Physics.Raycast(ray, out hit, 10, LayerMask.GetMask("Water"))) {
+        if (Physics.Raycast(ray, out hit, 20, LayerMask.GetMask("Water"))) {
             Vector3 v3 = transform.position;
             v3.y = hit.point.y;
             transform.position = v3;

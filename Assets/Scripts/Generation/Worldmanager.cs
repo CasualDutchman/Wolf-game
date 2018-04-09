@@ -43,6 +43,8 @@ public class Worldmanager : MonoBehaviour {
 
     public IManager[] managers;
 
+    public PerlinSettings terrainPerlin;
+
     public Biome[] biomes;
 
     private void Awake() {
@@ -194,7 +196,8 @@ public class Chunk {
 
         int chunkSize = Worldmanager.instance.tileXY;
 
-        float[,] map = Noise.GetHeightMap((int)chunkPos.x * Worldmanager.instance.tileXY, (int)chunkPos.y * Worldmanager.instance.tileXY, chunkSize + 1);
+        float[,] map = Worldmanager.instance.terrainPerlin.GetPerlinMapFloat((int)chunkPos.x * Worldmanager.instance.tileXY, (int)chunkPos.y * Worldmanager.instance.tileXY, chunkSize + 1, 10);
+        //float[,] map = Noise.GetHeightMap((int)chunkPos.x * Worldmanager.instance.tileXY, (int)chunkPos.y * Worldmanager.instance.tileXY, chunkSize + 1);
 
         float scale = Worldmanager.instance.tileScale;
 
@@ -219,21 +222,25 @@ public class Chunk {
                     verts.Add(new Vector3(beginX + scale, map[x + 1, y], beginY));
                 }
 
-                int random = rng.Next(16);
-                int rY = Mathf.FloorToInt(random / 4);
-                int rX = random % 4;
+                int fileSize = 4;
+                float one = 1 / (float)fileSize;
+                int newRandom = 4;
 
-                uvs.Add(new Vector2(rX * 0.25f, rY * 0.25f));
-                uvs.Add(new Vector2(rX * 0.25f, 0.25f + rY * 0.25f));
-                uvs.Add(new Vector2(0.25f + rX * 0.25f, rY * 0.25f));
+                int random = rng.Next(newRandom, newRandom + newRandom);
+                int rY = Mathf.FloorToInt(random / fileSize);
+                int rX = random % fileSize;
 
-                random = rng.Next(16);
-                rY = Mathf.FloorToInt(random / 4);
-                rX = random % 4;
+                uvs.Add(new Vector2(rX * one, rY * one));
+                uvs.Add(new Vector2(rX * one, one + rY * one));
+                uvs.Add(new Vector2(one + rX * one, rY * one));
 
-                uvs.Add(new Vector2(0.25f + rX * 0.25f, rY * 0.25f));
-                uvs.Add(new Vector2(rX * 0.25f, 0.25f + rY * 0.25f));
-                uvs.Add(new Vector2(0.25f + rX * 0.25f, 0.25f + rY * 0.25f));
+                random = rng.Next(newRandom, newRandom + newRandom);
+                rY = Mathf.FloorToInt(random / fileSize);
+                rX = random % fileSize;
+
+                uvs.Add(new Vector2(one + rX * one, rY * one));
+                uvs.Add(new Vector2(rX * one, one + rY * one));
+                uvs.Add(new Vector2(one + rX * one, one + rY * one));
 
                 int triCount = tris.Count;
 
@@ -249,7 +256,7 @@ public class Chunk {
         
         chunkSize = (int)(Worldmanager.instance.tileXY * Worldmanager.instance.tileScale);
 
-        int[,] foliage = Worldmanager.instance.biomes[0].settings.GetPerlinMapInt((int)chunkPos.x * Worldmanager.instance.tileXY, (int)chunkPos.y * Worldmanager.instance.tileXY, chunkSize, Worldmanager.instance.biomes[0].types.Length);//Noise.GetFoliageMap((int)chunkPos.x * Worldmanager.instance.tileXY, (int)chunkPos.y * Worldmanager.instance.tileXY, chunkSize, Worldmanager.instance.biomes[0].types.Length, Worldmanager.instance.biomes[0].layerCurve,
+        int[,] foliage = Worldmanager.instance.biomes[0].settings.GetPerlinMapInt((int)chunkPos.x * Worldmanager.instance.tileXY, (int)chunkPos.y * Worldmanager.instance.tileXY, chunkSize, Worldmanager.instance.biomes[0].types.Length, Worldmanager.instance.biomes[0].curve);//Noise.GetFoliageMap((int)chunkPos.x * Worldmanager.instance.tileXY, (int)chunkPos.y * Worldmanager.instance.tileXY, chunkSize, Worldmanager.instance.biomes[0].types.Length, Worldmanager.instance.biomes[0].layerCurve,
             //Worldmanager.instance.perlin1, Worldmanager.instance.perlin2, Worldmanager.instance.perlin3, Worldmanager.instance.perlin4,
             //Worldmanager.instance.perlin1Multiplier, Worldmanager.instance.perlin2Multiplier, Worldmanager.instance.perlin3Multiplier, Worldmanager.instance.perlin4Multiplier);
     

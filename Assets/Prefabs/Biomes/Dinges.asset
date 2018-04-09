@@ -11,8 +11,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8edc7580550cc9e4ab042d4c4b80cc84, type: 3}
   m_Name: Dinges
   m_EditorClassIdentifier: 
-  settings: {fileID: 11400000, guid: 6b91685df65340d498bbf7f01c77c617, type: 2}
-  layerCurve:
+  curve:
     serializedVersion: 2
     m_Curve:
     - serializedVersion: 2
@@ -22,28 +21,22 @@ MonoBehaviour:
       outSlope: 2
       tangentMode: 0
     - serializedVersion: 2
-      time: 0.2534178
+      time: 0.3141045
       value: 0.9735301
       inSlope: 0.101327896
       outSlope: 0.101327896
       tangentMode: 0
     - serializedVersion: 2
-      time: 0.40093365
-      value: 0.61046016
-      inSlope: -1.3228399
-      outSlope: -1.3228399
-      tangentMode: 0
-    - serializedVersion: 2
-      time: 0.5643945
-      value: 0.12050003
+      time: 0.4052779
+      value: 0.63177246
       inSlope: 0.3750342
       outSlope: 0.3750342
       tangentMode: 0
     - serializedVersion: 2
-      time: 0.7213552
-      value: 0.12522152
-      inSlope: 0.123965405
-      outSlope: 0.123965405
+      time: 0.63085514
+      value: 0.20576216
+      inSlope: -1.3228399
+      outSlope: -1.3228399
       tangentMode: 0
     - serializedVersion: 2
       time: 0.9970703
@@ -54,20 +47,26 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+  settings: {fileID: 11400000, guid: 6b91685df65340d498bbf7f01c77c617, type: 2}
   types:
-  - isNothing: 0
+  - isNothing: 1
     itemsToChoose:
     - {fileID: 0}
     - {fileID: 0}
   - isNothing: 0
     itemsToChoose:
-    - {fileID: 0}
+    - {fileID: 1599149554950668, guid: b660119643176e7469bfd662f28bfebd, type: 2}
+    - {fileID: 1641844984914136, guid: dd875bcb53b49f14e804aea8f1ba963b, type: 2}
+    - {fileID: 1216783963771064, guid: f227ea8ac74a7814ea9f4b823203ead5, type: 2}
   - isNothing: 0
     itemsToChoose:
-    - {fileID: 0}
+    - {fileID: 1755963366033402, guid: 477d187ef8191a342a6b5a8e48d28cf7, type: 2}
+    - {fileID: 1385245053136690, guid: dc946dae03a1de1449e508bffcf3cc3b, type: 2}
+    - {fileID: 1641844984914136, guid: dd875bcb53b49f14e804aea8f1ba963b, type: 2}
   - isNothing: 0
     itemsToChoose:
-    - {fileID: 0}
-  - isNothing: 0
-    itemsToChoose:
-    - {fileID: 0}
+    - {fileID: 1362354704826178, guid: 5a17a0877eca3ea46b533ddf16757b79, type: 2}
+    - {fileID: 1808471652203670, guid: aa2aae4c398dfe24fbb9c9ceb90b1c48, type: 2}
+    - {fileID: 1595320973293346, guid: 16378389f715ef9488f42272c0075bef, type: 2}
+    - {fileID: 1195893082529722, guid: 4b0bccab7a4d42541a1a3062bc21456f, type: 2}
+    - {fileID: 1455895891286368, guid: dc0de15959846c5488bc2485fcf92ce5, type: 2}

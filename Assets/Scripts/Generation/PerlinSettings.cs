@@ -5,8 +5,6 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "Perlin Settings", menuName = "Generation/Perlin Settings", order = 1)]
 public class PerlinSettings : ScriptableObject {
 
-    public AnimationCurve curve;
-
     [Header("Perlin")]
     [Range(20.0f, 100.0f)]
     public float perlin1 = 70.0f;
@@ -38,6 +36,10 @@ public class PerlinSettings : ScriptableObject {
     }
 
     public float[,] GetPerlinMapFloat(int beginX, int beginY, int size, int length) {
+        return GetPerlinMapFloat(beginX, beginY, size, length, null);
+    }
+
+    public float[,] GetPerlinMapFloat(int beginX, int beginY, int size, int length, AnimationCurve curve) {
         float[,] noiseMap = new float[size, size];
 
         for (int y = 0; y < size; y++) {
@@ -55,13 +57,16 @@ public class PerlinSettings : ScriptableObject {
                 if (f >= 1)
                     f = 0.999f;
 
-                float value = curve.Evaluate(f);
+                float value = f;
+                if (curve != null) {
+                    value = curve.Evaluate(f);
 
-                if (value < 0)
-                    value = 0.001f;
+                    if (value < 0)
+                        value = 0.001f;
 
-                if (value >= 1)
-                    value = 0.999f;
+                    if (value >= 1)
+                        value = 0.999f;
+                }
 
                 noiseMap[x, y] = length * value;
             }
@@ -75,8 +80,12 @@ public class PerlinSettings : ScriptableObject {
     }
 
     public int[,] GetPerlinMapInt(int beginX, int beginY, int size, int length) {
+        return GetPerlinMapInt(beginX, beginY, size, length, null);
+    }
+
+    public int[,] GetPerlinMapInt(int beginX, int beginY, int size, int length, AnimationCurve curve) {
         int[,] noiseMap = new int[size, size];
-        float[,] perlinMap = GetPerlinMapFloat(beginX, beginY, size, 1);
+        float[,] perlinMap = GetPerlinMapFloat(beginX, beginY, size, 1, curve);
 
         for (int y = 0; y < size; y++) {
             for (int x = 0; x < size; x++) {
@@ -92,8 +101,12 @@ public class PerlinSettings : ScriptableObject {
     }
 
     public bool[,] GetPerlinMapBool(int beginX, int beginY, int size, int length, int below) {
+        return GetPerlinMapBool(beginX, beginY, size, length, below, null);
+    }
+
+    public bool[,] GetPerlinMapBool(int beginX, int beginY, int size, int length, int below, AnimationCurve curve) {
         bool[,] noiseMap = new bool[size, size];
-        float[,] perlinMap = GetPerlinMapFloat(beginX, beginY, size, length);
+        float[,] perlinMap = GetPerlinMapFloat(beginX, beginY, size, length, curve);
 
         for (int y = 0; y < size; y++) {
             for (int x = 0; x < size; x++) {
