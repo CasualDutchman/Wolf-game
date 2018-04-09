@@ -7,7 +7,6 @@ public class Worldmanager : MonoBehaviour {
 
     public static Worldmanager instance;
 
-    [Range(0, 4f)]
     public float blend = 0;
     public Material mat;
 
@@ -59,11 +58,21 @@ public class Worldmanager : MonoBehaviour {
 
     }
 
+    void OnDisable() {
+        mat.SetFloat("_Blend", 0);
+    }
+
     void Update () {
         Vector2 newChunkPos = new Vector2(Mathf.FloorToInt(target.position.x / TileSize), Mathf.FloorToInt(target.position.z / TileSize));
 
-        //if(mat != null)
-            //mat.SetFloat("_Blend", blend);
+        if (mat != null) {
+            blend += Time.deltaTime * 0.1f;
+            if (blend >= 4) {
+                blend = 0;
+            }
+
+            mat.SetFloat("_Blend", blend);
+        }
 
         if (!generating && chunksToUpdate.Count > 0) {
                 generationThread = new Thread(chunksToUpdate[0].GenerateData);
