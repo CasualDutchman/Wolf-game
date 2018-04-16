@@ -1,0 +1,5 @@
+hudleveltext=Level: {0}
+
+hello=Hallo
+hello2=Goedemorgen
+hello3=Hoi

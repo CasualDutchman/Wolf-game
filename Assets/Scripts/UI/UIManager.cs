@@ -15,6 +15,14 @@ public class UIManager : MonoBehaviour {
         instance = this;
     }
 
+    void Start() {
+        
+    }
+
+    public void OnChangeLanguagePref() {
+        
+    }
+
     public void UpdateHealthBar(float fill) {
         components.healthBarFill.fillAmount = fill;
     }
@@ -28,6 +36,6 @@ public class UIManager : MonoBehaviour {
     }
 
     public void UpdateLevelText(int i) {
-        components.experienceText.text = string.Format(levelPreset, i);
+        components.experienceText.text = LocalizationManager.instance.GetLocalizedValue(levelPreset, i); //string.Format(LocalizationManager.instance.GetLocalizedValue(levelPreset), i);
     }
 }

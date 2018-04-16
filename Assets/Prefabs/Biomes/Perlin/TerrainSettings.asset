@@ -13,9 +13,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   perlin1: 70
   perlin2: 40
-  perlin3: 9.7
+  perlin3: 11.7
   perlin4: 2
   multiplier1: 1
-  multiplier2: 5.02
-  multiplier3: 3.34
-  multiplier4: 1
+  multiplier2: 7.74
+  multiplier3: 7.33
+  multiplier4: 1.07

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<pipeline-preset-template>
+    <options>
+        <option id="id1">
+            <value>False</value>
+        </option>
+    </options>
+</pipeline-preset-template>

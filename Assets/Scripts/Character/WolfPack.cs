@@ -38,7 +38,7 @@ public class WolfPack : MonoBehaviour {
 
         uimanager = UIManager.instance;
 
-        UpdateTexts();
+        Updatebars();
         UpdateExperienceTexts();
     }
 	
@@ -52,7 +52,7 @@ public class WolfPack : MonoBehaviour {
                 health += 5;
             }
 
-            UpdateTexts();
+            Updatebars();
         }
 
         if (health < maxhealth) {
@@ -64,7 +64,7 @@ public class WolfPack : MonoBehaviour {
         }
 	}
 
-    public void UpdateTexts() {
+    public void Updatebars() {
         uimanager.UpdateHealthBar(health / maxhealth);
         uimanager.UpdateFoodBar(food / maxFood);
     }
@@ -77,13 +77,13 @@ public class WolfPack : MonoBehaviour {
     public void Damage(float amount) {
         health -= amount;
 
-        UpdateTexts();
+        Updatebars();
     }
 
     public void ChangeFood(float amount) {
         food = Mathf.Clamp(food + amount, 0, maxFood);
 
-        UpdateTexts();
+        Updatebars();
     }
 
     public void AddXP(int amount) {

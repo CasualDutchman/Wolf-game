@@ -55,18 +55,15 @@ MonoBehaviour:
     - {fileID: 0}
   - isNothing: 0
     itemsToChoose:
-    - {fileID: 1599149554950668, guid: b660119643176e7469bfd662f28bfebd, type: 2}
-    - {fileID: 1641844984914136, guid: dd875bcb53b49f14e804aea8f1ba963b, type: 2}
-    - {fileID: 1216783963771064, guid: f227ea8ac74a7814ea9f4b823203ead5, type: 2}
+    - {fileID: 1344671604263102, guid: 6c3766d4084c5fd4c812286ea6a01f3f, type: 2}
+    - {fileID: 1948557432202776, guid: 032993b0d00f93b499f805fb48c99666, type: 2}
+    - {fileID: 1016452326030940, guid: 378c00e62a87ed4409bf461a799b00df, type: 2}
   - isNothing: 0
     itemsToChoose:
-    - {fileID: 1755963366033402, guid: 477d187ef8191a342a6b5a8e48d28cf7, type: 2}
-    - {fileID: 1385245053136690, guid: dc946dae03a1de1449e508bffcf3cc3b, type: 2}
-    - {fileID: 1641844984914136, guid: dd875bcb53b49f14e804aea8f1ba963b, type: 2}
+    - {fileID: 1016452326030940, guid: 378c00e62a87ed4409bf461a799b00df, type: 2}
+    - {fileID: 1344671604263102, guid: 6c3766d4084c5fd4c812286ea6a01f3f, type: 2}
+    - {fileID: 1948557432202776, guid: 032993b0d00f93b499f805fb48c99666, type: 2}
   - isNothing: 0
     itemsToChoose:
-    - {fileID: 1362354704826178, guid: 5a17a0877eca3ea46b533ddf16757b79, type: 2}
-    - {fileID: 1808471652203670, guid: aa2aae4c398dfe24fbb9c9ceb90b1c48, type: 2}
-    - {fileID: 1595320973293346, guid: 16378389f715ef9488f42272c0075bef, type: 2}
-    - {fileID: 1195893082529722, guid: 4b0bccab7a4d42541a1a3062bc21456f, type: 2}
-    - {fileID: 1455895891286368, guid: dc0de15959846c5488bc2485fcf92ce5, type: 2}
+    - {fileID: 1318783775401418, guid: 72fe5e86e1e25944a9bb0d493e1dee9f, type: 2}
+    - {fileID: 1307542351828836, guid: 1eece63cde76ca4438da1ca2b3286598, type: 2}

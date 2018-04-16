@@ -48,6 +48,8 @@ public class Worldmanager : MonoBehaviour {
     public Biome[] biomes;
 
     private void Awake() {
+        Application.targetFrameRate = 60;
+
         instance = this;
 
         loadingUI.SetActive(showLoadingScreen);
@@ -171,7 +173,8 @@ public class Worldmanager : MonoBehaviour {
             GameObject go = Instantiate(foliage.itemsToChoose[prng.Next(0, foliage.itemsToChoose.Length)], parent);
 
             float newx = (int)pos.z % 2 == 0 ? 0 : 0.5f;
-            go.transform.localPosition = pos + new Vector3((prng.Next(0, 200) - 100) * 0.001f + newx, 0f, (prng.Next(0, 200) - 100) * 0.0015f);
+            float newy = (int)pos.x % 2 == 0 ? 0 : 0.5f;
+            go.transform.localPosition = pos + new Vector3((prng.Next(0, 200) - 100) * 0.001f + newx, 0f, (prng.Next(0, 200) - 100) * 0.0015f + newy);
 
             go.transform.localEulerAngles = new Vector3(-90, 0, (prng.Next(0, 30) - 15));
         }
@@ -222,11 +225,11 @@ public class Chunk {
                     verts.Add(new Vector3(beginX + scale, map[x + 1, y], beginY));
                 }
 
-                int fileSize = 4;
+                int fileSize = 32;
                 float one = 1 / (float)fileSize;
-                int newRandom = 4;
+                int newRandom = 7;
 
-                int random = rng.Next(newRandom, newRandom + newRandom);
+                int random = rng.Next(0, newRandom);
                 int rY = Mathf.FloorToInt(random / fileSize);
                 int rX = random % fileSize;
 
@@ -234,7 +237,7 @@ public class Chunk {
                 uvs.Add(new Vector2(rX * one, one + rY * one));
                 uvs.Add(new Vector2(one + rX * one, rY * one));
 
-                random = rng.Next(newRandom, newRandom + newRandom);
+                random = rng.Next(0, newRandom);
                 rY = Mathf.FloorToInt(random / fileSize);
                 rX = random % fileSize;
 
