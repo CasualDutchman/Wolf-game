@@ -9,17 +9,24 @@ public class WolfMovement : MonoBehaviour {
 
     public float maxSpeed;
 
+    Animator anim;
+
 	void Start () {
-		
+        anim = GetComponent<Animator>();
 	}
 	
 	void Update () {
         Vector3 target = GroupMovement.instance.RelativePositionToWorld(id);
 
         velocity = target - transform.position;
+
         velocity = Vector3.ClampMagnitude(velocity, 1);
-        velocity = Vector3.ClampMagnitude(velocity * Time.deltaTime * maxSpeed, maxSpeed);
-        transform.position += velocity;
+        anim.SetFloat("Blend", 0.5f * Mathf.FloorToInt(velocity.magnitude * maxSpeed));
+
+        velocity = Vector3.ClampMagnitude(velocity * maxSpeed, maxSpeed);
+        transform.position += velocity * Time.deltaTime;
+
+        
 
         Vector3 look = velocity;
         look.y = 0;

@@ -486,7 +486,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8ce2cd629af293d47a22a67c986668ef, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  wolfPrefab: {fileID: 1983470572985944, guid: 0b4ea579bc6fa124fa9478bf118bb3af, type: 2}
+  wolfPrefab: {fileID: 1428368513116886, guid: bfa22d5c614e4a74886c19b3e3080565, type: 2}
   cameraRig: {fileID: 2054463265}
   relativePositions: []
   newRelativePositions: []
@@ -2279,7 +2279,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1318990128}
   m_LocalRotation: {x: -0.7071068, y: -0, z: -0, w: 0.7071067}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: -10, z: 0}
   m_LocalScale: {x: 100, y: 99.99997, z: 99.99997}
   m_Children:
   - {fileID: 1446907744}
