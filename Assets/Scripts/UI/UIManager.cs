@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class UIManager : MonoBehaviour {
 
@@ -23,19 +24,27 @@ public class UIManager : MonoBehaviour {
         
     }
 
+    public Image GetImage(Transform obj) {
+        return obj.GetComponent<Image>();
+    }
+
+    public Text GetText(Transform obj) {
+        return obj.GetComponent<Text>();
+    }
+
     public void UpdateHealthBar(float fill) {
-        components.healthBarFill.fillAmount = fill;
+        GetImage(components.imageHealthFill).fillAmount = fill;
     }
 
     public void UpdateFoodBar(float fill) {
-        components.foodBarFill.fillAmount = fill;
+        GetImage(components.imageFoodBarFill).fillAmount = fill;
     }
 
     public void UpdateExperienceBar(float fill) {
-        components.experienceBarFill.fillAmount = fill;
+        GetImage(components.imageExperienceBarFill).fillAmount = fill;
     }
 
     public void UpdateLevelText(int i) {
-        components.experienceText.text = LocalizationManager.instance.GetLocalizedValue(levelPreset, i); //string.Format(LocalizationManager.instance.GetLocalizedValue(levelPreset), i);
+        GetText(components.textExperience).text = LocalizationManager.instance.GetLocalizedValue(levelPreset, i); //string.Format(LocalizationManager.instance.GetLocalizedValue(levelPreset), i);
     }
 }

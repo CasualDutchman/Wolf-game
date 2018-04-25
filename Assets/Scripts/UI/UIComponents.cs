@@ -5,19 +5,21 @@ using UnityEngine.UI;
 
 public class UIComponents : MonoBehaviour {
 
+    [Header("Screens")]
+    public GameObject screenHUD, screenWolfPack, screenAlpha, screenSettings;
+
     [Header("HUD")]
-    public Transform screenHUD;
-    public Image healthBarFill;
-    public Image foodBarFill;
-    public Image experienceBarFill;
-    public Text experienceText;
+    public Transform imageHealthFill;
+    public Transform imageFoodBarFill;
+    public Transform imageExperienceBarFill;
+    public Transform textExperience;
+    public Transform buttonStore;
+    public Transform buttonSettings;
 
-    [Header("Wolf Pack Screen")]
-    public Transform screenWolfPack;
 
-    [Header("Alpha Screen")]
-    public Transform screenAlpha;
+    //[Header("Wolf Pack Screen")]
 
-    [Header("Settings Screen")]
-    public Transform screenSettings;
+    //[Header("Alpha Screen")]
+
+    //[Header("Settings Screen")]
 }
