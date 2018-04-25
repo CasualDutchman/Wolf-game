@@ -1,5 +1,9 @@
+//Hud
 hudleveltext=Level: {0}
 
-hello=Hallo
-hello2=Goedemorgen
-hello3=Hoi
+//Settings
+settingstitle=Instellingen
+settinggraphical=Kwaliteit
+settinggraphicalonoff=Hoog/Laag
+settingaudio=Audio
+settingaudioonoff=Aan/Uit

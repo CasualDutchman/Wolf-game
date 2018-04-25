@@ -6,23 +6,19 @@ using UnityEngine;
 public class PerlinSettings : ScriptableObject {
 
     [Header("Perlin")]
-    [Range(20.0f, 100.0f)]
+    [Range(1f, 100.0f)]
     public float perlin1 = 70.0f;
-    [Range(10.0f, 60.0f)]
+    [Range(0.5f, 60.0f)]
     public float perlin2 = 40.0f;
-    [Range(1.0f, 40.0f)]
+    [Range(0.1f, 40.0f)]
     public float perlin3 = 30.0f;
-    [Range(1.1f, 10.0f)]
+    [Range(0.03f, 10.0f)]
     public float perlin4 = 2.0f;
 
     [Header("Multipliers")]
-    [Range(0.1f, 10.0f)]
     public float multiplier1 = 1.0f;
-    [Range(0.1f, 10.0f)]
     public float multiplier2 = 1.0f;
-    [Range(0.1f, 10.0f)]
     public float multiplier3 = 1.0f;
-    [Range(0.1f, 10.0f)]
     public float multiplier4 = 1.0f;
 
     int defaultX = 0;

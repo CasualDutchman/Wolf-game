@@ -7,8 +7,12 @@ public class Worldmanager : MonoBehaviour {
 
     public static Worldmanager instance;
 
-    public float blend = 0;
+    public float blendMultiplier = 0.001f;
+    float blend = 0;
     public Material mat;
+    public Camera textureCamera;
+    public float renderInterval;
+    float renderTimer;
 
     public GameObject[] treePrefab;
 
@@ -48,7 +52,7 @@ public class Worldmanager : MonoBehaviour {
     public Biome[] biomes;
 
     private void Awake() {
-        Application.targetFrameRate = 60;
+        //Application.targetFrameRate = 60;
 
         instance = this;
 
@@ -59,7 +63,7 @@ public class Worldmanager : MonoBehaviour {
 
     void Start() {
         managers = GetComponents<IManager>();
-
+        textureCamera.Render();
     }
 
     void OnDisable() {
@@ -70,9 +74,14 @@ public class Worldmanager : MonoBehaviour {
         Vector2 newChunkPos = new Vector2(Mathf.FloorToInt(target.position.x / TileSize), Mathf.FloorToInt(target.position.z / TileSize));
 
         if (mat != null) {
-            blend += Time.deltaTime * 0.1f;
+            blend += Time.deltaTime * blendMultiplier;
             if (blend >= 4) {
                 blend = 0;
+            }
+            renderTimer += Time.deltaTime;
+            if (renderTimer >= renderInterval) {
+                textureCamera.Render();
+                renderTimer = 0;
             }
 
             mat.SetFloat("_Blend", blend);

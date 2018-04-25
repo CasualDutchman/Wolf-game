@@ -1,11 +1,9 @@
+//Hud
 hudleveltext=Level: {0}
 
-/Test
-hello=Hello
-hello2=Good day
-hello3=Hi
-
-/Names
-name1=Henri
-name2=Ben
-name3=Bob
+//Settings
+settingstitle=Settings
+settinggraphical=Quality
+settinggraphicalonoff=High/Low
+settingaudio=Audio
+settingaudioonoff=On/Off
