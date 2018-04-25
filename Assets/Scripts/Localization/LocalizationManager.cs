@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Text;
 using UnityEngine;
 
 public class LocalizationManager : MonoBehaviour {
@@ -26,14 +27,24 @@ public class LocalizationManager : MonoBehaviour {
         StartCoroutine(LoadDictionary(loadedlanguage));
     }
 
+    /// <summary>
+    /// When the language is updated
+    /// </summary>
+    /// <param name="lang">language index string</param>
     public void OnChangeLanguagePref(string lang) {
         PlayerPrefs.SetString("Language", lang);
         PlayerPrefs.Save();
+        loadedlanguage = lang;
         StartCoroutine(LoadDictionary(lang));
 
         uiManager.OnChangeLanguagePref();
     }
 
+    /// <summary>
+    /// Return the localized value based on the key
+    /// </summary>
+    /// <param name="key">unlocalized key</param>
+    /// <returns>Localized value</returns>
     public string GetLocalizedValue(string key) {
         string result = "Missing Localized Info. key = " + key;
 
@@ -44,32 +55,33 @@ public class LocalizationManager : MonoBehaviour {
         return result;
     }
 
+    /// <summary>
+    /// Load the Dictionary based on the language index string
+    /// </summary>
+    /// <param name="lang">language index string</param>
     IEnumerator LoadDictionary(string lang) {
         dictionary = new Dictionary<string, string>();
         string filePath = Path.Combine(Application.streamingAssetsPath, lang + ".txt");
 
-        if (File.Exists(filePath)) {
-            string[] dataArray = File.ReadAllLines(filePath);
+        TextAsset textass = Resources.Load("Languages/" + lang) as TextAsset;
+
+        if(textass != null) { 
+            string[] dataArray = textass.text.Split("\n"[0]);
+
             foreach (string data in dataArray) {
-                if (data.StartsWith("/") || string.IsNullOrEmpty(data))
-                    continue;
+                if (data.StartsWith("/") || string.IsNullOrEmpty(data) || char.IsControl(data[0]))
+                        continue;
 
                 string[] keyValue = data.Split('=');
                 dictionary.Add(keyValue[0], keyValue[1]);
                 if (debugAll) {
-                    #if (UNITY_EDITOR)
                     Debug.Log(string.Format("{0} || {1} , {2}", data, keyValue[0], keyValue[1]));
-                    #endif
                 }
             }
 
-            #if (UNITY_EDITOR)
             Debug.Log("Localized content loaded. Dictionary contains " + dictionary.Count + " entries");
-            #endif
         } else {
-            #if (UNITY_EDITOR)
             Debug.LogError(lang + ".txt does not excist in the StreamingAssets folder.");
-            #endif
         }
 
         yield return 0; 

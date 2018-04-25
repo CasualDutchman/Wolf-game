@@ -8,6 +8,7 @@ public class GroupMovement : MonoBehaviour {
     public static GroupMovement instance;
 
     WolfPack wolfPack;
+    public UIManager uiManager;
 
     public GameObject wolfPrefab;
 
@@ -44,11 +45,10 @@ public class GroupMovement : MonoBehaviour {
 
     public Image knob;
 
-    public bool mouseControl = true;
+    bool uiHit = false;
 
     void Awake() {
         instance = this;
-
     }
 
     void Start () {
@@ -74,14 +74,18 @@ public class GroupMovement : MonoBehaviour {
 	}
 	
 	void Update () {
-        if (mouseControl) {
+        if (uiManager.IsHUD()) {
             if (Input.GetMouseButtonDown(0)) {
-                begin = Input.mousePosition;
-                knob.enabled = true;
-                knob.GetComponent<RectTransform>().anchoredPosition = Input.mousePosition;
+                uiHit = uiManager.IsHittingUI();
+
+                if (!uiHit) {
+                    begin = Input.mousePosition;
+                    knob.enabled = true;
+                    knob.GetComponent<RectTransform>().anchoredPosition = Input.mousePosition;
+                }
             }
 
-            if (Input.GetMouseButton(0)) {
+            if (Input.GetMouseButton(0) && !uiHit) {
                 hold = Input.mousePosition;
                 dir = hold - begin;
                 dir = Vector3.ClampMagnitude(dir * 0.1f, 5);
@@ -89,19 +93,9 @@ public class GroupMovement : MonoBehaviour {
                 transform.Translate(new Vector3(dir.x, 0, dir.y) * Time.deltaTime, Space.World);
             }
 
-            if (Input.GetMouseButtonUp(0)) {
+            if (Input.GetMouseButtonUp(0) && !uiHit) {
                 knob.enabled = false;
                 transform.position = centerOfWolves;
-            }
-        } 
-        else {
-            velocity = new Vector3(Input.GetAxis("Horizontal") * Time.deltaTime * maxSpeed, 0, Input.GetAxis("Vertical") * Time.deltaTime * maxSpeed);
-
-
-            if (velocity.normalized.magnitude < 0.3f && Vector3.Distance(transform.position, centerOfWolves) > 4f) {
-                transform.position = centerOfWolves;
-            } else {
-                transform.position += velocity;
             }
         }
 

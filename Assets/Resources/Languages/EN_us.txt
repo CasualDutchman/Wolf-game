@@ -1,5 +1,6 @@
 //Hud
 hudleveltext=Level: {0}
+sidealpha=Alpha
 
 //Settings
 settingstitle=Settings
@@ -7,3 +8,5 @@ settinggraphical=Quality
 settinggraphicalonoff=High/Low
 settingaudio=Audio
 settingaudioonoff=On/Off
+settingenglish=English
+settingdutch=Nederlands

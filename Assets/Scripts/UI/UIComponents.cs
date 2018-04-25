@@ -16,6 +16,8 @@ public class UIComponents : MonoBehaviour {
     public Transform textExperience;
     public Transform buttonStore;
     public Transform buttonSettings;
+    public Transform buttonSide;
+    public Transform buttonAlpha;
 
     //[Header("Wolf Pack Screen")]
 
@@ -26,6 +28,7 @@ public class UIComponents : MonoBehaviour {
     public Transform skillB1;
     public Transform skillB2;
     public Transform skillB3;
+    public Transform buttonBackAlpha;
 
     [Header("Settings Screen")]
     public Transform textSettingsTitle;
@@ -36,4 +39,6 @@ public class UIComponents : MonoBehaviour {
     public Transform buttonGraphics;
     public Transform buttonAudio;
     public Transform buttonBackSettings;
+    public Transform buttonEnglish;
+    public Transform buttonDutch;
 }

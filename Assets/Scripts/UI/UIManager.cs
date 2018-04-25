@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.EventSystems;
 
 public enum Screens { Hud, Settings, Alpha }
 
@@ -18,6 +19,7 @@ public class UIManager : MonoBehaviour {
     public static UIManager instance;
 
     public UIComponents components;
+    public EventSystem eventSystem;
 
     Dictionary<string, LocalizedItem> textRegistry = new Dictionary<string, LocalizedItem>();
 
@@ -28,6 +30,11 @@ public class UIManager : MonoBehaviour {
 
     [Header("HUD")]
     public string unlocalizedExperience;
+    public string unlocalizedAlpha;
+    public float sideAppearTime = 1;
+    bool sideOpen = false;
+    bool sideChanging = false;
+    Vector3 localSizeOrigin;
 
     [Header("Alpha")]
     public string unlocalizedAlphaTitle;
@@ -41,24 +48,26 @@ public class UIManager : MonoBehaviour {
     public string unlocalizedGraphicsOnOff;
     public string unlocalizedAudio;
     public string unlocalizedAudioOnOff;
+    public string unlocalizedEnglish;
+    public string unlocalizedDutch;
 
     void Awake() {
         instance = this;
     }
 
     void Start() {
+        localSizeOrigin = components.buttonSide.localPosition;
         RegisterTexts();
         LoadSettings();
-    }
-
-    void Update() {
-        
     }
 
     void RegisterTexts() {
         //HUD
         RegisterText(components.textExperience, unlocalizedExperience);
         RegisterButton(components.buttonSettings, () => ChangeScreen(Screens.Settings));
+        RegisterButton(components.buttonSide, () => OnSide());
+        RegisterButton(components.buttonAlpha, () => ChangeScreen(Screens.Alpha));
+        RegisterText(components.buttonAlpha.GetChild(0), unlocalizedAlpha);
 
         //Alpha
         RegisterSkill(components.skillA1, 0);
@@ -66,6 +75,7 @@ public class UIManager : MonoBehaviour {
         RegisterSkill(components.skillB1, 2);
         RegisterSkill(components.skillB2, 3);
         RegisterSkill(components.skillB3, 4);
+        RegisterButton(components.buttonBackAlpha, () => ChangeScreen(Screens.Hud));
 
         //Settings
         RegisterButton(components.buttonBackSettings, () => ChangeScreen(Screens.Hud));
@@ -76,6 +86,18 @@ public class UIManager : MonoBehaviour {
         RegisterText(components.textAudioOnOff, unlocalizedAudioOnOff);
         RegisterToggle(components.buttonGraphics, (b) => { OnToggleGraphical(b);});
         RegisterToggle(components.buttonAudio, (b) => { OnToggleAudio(b); });
+        RegisterButton(components.buttonEnglish, () => OnChangeLanguage("EN_us"));
+        RegisterText(components.buttonEnglish.GetChild(0), unlocalizedEnglish);
+        RegisterButton(components.buttonDutch, () => OnChangeLanguage("NL_nl"));
+        RegisterText(components.buttonDutch.GetChild(0), unlocalizedDutch);
+    }
+
+    public bool IsHittingUI() {
+        return eventSystem.IsPointerOverGameObject();
+    }
+
+    public bool IsHUD() {
+        return currentScreen == Screens.Hud;
     }
 
     #region Registry
@@ -109,7 +131,11 @@ public class UIManager : MonoBehaviour {
     }
 
     public void OnChangeLanguagePref() {
-        UpdateText(unlocalizedExperience);
+        foreach (KeyValuePair<string, LocalizedItem> item in textRegistry) {
+            item.Value.Change();
+            item.Value.UpdateItem("");
+        }
+        //UpdateText(unlocalizedExperience);
     }
 
     public Image GetImage(Transform obj) {
@@ -131,6 +157,10 @@ public class UIManager : MonoBehaviour {
     }
 
     public void ChangeScreen(Screens screen) {
+        if(screen == Screens.Hud) {
+            components.buttonSide.localPosition = localSizeOrigin;
+            sideOpen = false;
+        }
         StartCoroutine(IEChangeScreen(screen));
     }
 
@@ -143,6 +173,35 @@ public class UIManager : MonoBehaviour {
     #endregion
 
     #region Hud
+    public void OnSide() {
+        if (sideChanging)
+            return;
+
+        sideChanging = true;
+        StartCoroutine(Side());
+    }
+
+    IEnumerator Side() {
+        float timer = 0;
+        bool run = true;
+        while (run) {
+            timer += Time.deltaTime * (1 / sideAppearTime);
+            Vector3 newpos;
+            if (!sideOpen) {
+                newpos = Vector3.Lerp(localSizeOrigin, localSizeOrigin + new Vector3(220, 0, 0), timer);
+            }else {
+                newpos = Vector3.Lerp(localSizeOrigin + new Vector3(220, 0, 0), localSizeOrigin, timer);
+            }
+            components.buttonSide.localPosition = newpos;
+            if (timer >= 1) {
+                sideOpen = !sideOpen;
+                run = false;
+                sideChanging = false;
+            }
+            yield return new WaitForEndOfFrame();
+        }
+        yield return 0;
+    }
 
     public void UpdateHealthBar(float fill) {
         GetImage(components.imageHealthFill).fillAmount = fill;
@@ -181,6 +240,13 @@ public class UIManager : MonoBehaviour {
     public void OnToggleGraphical(bool b) {
         if (settingsLoaded) {
             graphicalSettings = !graphicalSettings;
+        }
+    }
+
+    public void OnChangeLanguage(string lang) {
+        if (!LocalizationManager.instance.loadedlanguage.Equals(lang)) {
+            LocalizationManager.instance.OnChangeLanguagePref(lang);
+            OnChangeLanguagePref();
         }
     }
     #endregion
