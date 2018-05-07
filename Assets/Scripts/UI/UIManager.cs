@@ -20,6 +20,10 @@ public class UIManager : MonoBehaviour {
 
     public UIComponents components;
     public EventSystem eventSystem;
+    public WolfPack wolfPack;
+
+    Settingsmanager settings;
+    SkillManager skillManager;
 
     Dictionary<string, LocalizedItem> textRegistry = new Dictionary<string, LocalizedItem>();
 
@@ -40,9 +44,6 @@ public class UIManager : MonoBehaviour {
     public string unlocalizedAlphaTitle;
 
     [Header("Settings")]
-    bool audioSettings = true;
-    bool graphicalSettings = false;
-    bool settingsLoaded = false;
     public string unlocalizedSettingsTitle;
     public string unlocalizedGraphics;
     public string unlocalizedGraphicsOnOff;
@@ -56,9 +57,32 @@ public class UIManager : MonoBehaviour {
     }
 
     void Start() {
+        settings = Settingsmanager.instance;
+        skillManager = GetComponent<SkillManager>();
         localSizeOrigin = components.buttonSide.localPosition;
         RegisterTexts();
         LoadSettings();
+    }
+
+    void Update() {
+        if (Input.GetKeyDown(KeyCode.Escape)) {
+            if (currentScreen != Screens.Hud) {
+                ChangeScreen(Screens.Hud);
+            } else {
+                skillManager.SaveSkills();
+                wolfPack.Save();
+                PlayerPrefs.Save();
+                Application.Quit();
+            }
+        }
+    }
+
+    void OnApplicationPause(bool pause) {
+        if (pause) {
+            skillManager.SaveSkills();
+            wolfPack.Save();
+            PlayerPrefs.Save();
+        }
     }
 
     void RegisterTexts() {
@@ -90,6 +114,7 @@ public class UIManager : MonoBehaviour {
         RegisterText(components.buttonEnglish.GetChild(0), unlocalizedEnglish);
         RegisterButton(components.buttonDutch, () => OnChangeLanguage("NL_nl"));
         RegisterText(components.buttonDutch.GetChild(0), unlocalizedDutch);
+        RegisterButton(components.buttonQuitDelete, () => DeleteAndQuit());
     }
 
     public bool IsHittingUI() {
@@ -133,7 +158,7 @@ public class UIManager : MonoBehaviour {
     public void OnChangeLanguagePref() {
         foreach (KeyValuePair<string, LocalizedItem> item in textRegistry) {
             item.Value.Change();
-            item.Value.UpdateItem("");
+            //item.Value.UpdateItem("");
         }
         //UpdateText(unlocalizedExperience);
     }
@@ -161,6 +186,9 @@ public class UIManager : MonoBehaviour {
             components.buttonSide.localPosition = localSizeOrigin;
             sideOpen = false;
         }
+        else if (screen == Screens.Alpha) {
+            OnAlphaOpened();
+        }
         StartCoroutine(IEChangeScreen(screen));
     }
 
@@ -169,6 +197,19 @@ public class UIManager : MonoBehaviour {
         currentScreen = screen;
         GetScreen(currentScreen).SetActive(true);
         yield return 0;
+    }
+    #endregion
+
+    #region Alpha
+    void OnAlphaOpened() {
+        for (int i = 0; i < 5; i++) {
+            skillHolder[i].skillName.text = LocalizationManager.instance.GetLocalizedValue(skillManager.skills[i].skill.unlocalizedName);
+            if (skillManager.skills[i].skill.skillType == SkillType.A) {
+                skillHolder[i].skillRadial.fillAmount = (float)skillManager.skills[i].animalCounter / (float)skillManager.skills[i].skill.animalCount;
+            } else {
+                skillHolder[i].skillRadial.fillAmount = 1;
+            }
+        }
     }
     #endregion
 
@@ -222,25 +263,24 @@ public class UIManager : MonoBehaviour {
 
     #region Settings
     void LoadSettings() {
-        //graphicalSettings = PlayerPrefs.GetInt(unlocalizedGraphics) == 1;
-        //audioSettings = PlayerPrefs.GetInt(unlocalizedAudio) == 1;
+        settings.graphicalSettings = PlayerPrefs.GetInt(unlocalizedGraphics) == 0 ? Graphical.High : Graphical.Low;
+        settings.audioSettings = PlayerPrefs.GetInt(unlocalizedAudio) == 0 ? OnOff.On : OnOff.Off;
 
-        components.buttonGraphics.GetComponent<Toggle>().isOn = graphicalSettings;
-        components.buttonAudio.GetComponent<Toggle>().isOn = audioSettings;
+        settings.SetGraphical();
+        settings.SetAudio();
 
-        settingsLoaded = true;
+        components.buttonGraphics.GetComponent<Toggle>().isOn = settings.graphicalSettings == Graphical.High;
+        components.buttonAudio.GetComponent<Toggle>().isOn = settings.audioSettings == OnOff.On;
+
+        settings.EnableSettings();
     }
 
     public void OnToggleAudio(bool b) {
-        if (settingsLoaded) {
-            audioSettings = !audioSettings;
-        }
+        settings.OnToggleAudio(b, unlocalizedAudio);
     }
 
     public void OnToggleGraphical(bool b) {
-        if (settingsLoaded) {
-            graphicalSettings = !graphicalSettings;
-        }
+        settings.OnToggleGraphical(b, unlocalizedGraphics);
     }
 
     public void OnChangeLanguage(string lang) {
@@ -248,6 +288,11 @@ public class UIManager : MonoBehaviour {
             LocalizationManager.instance.OnChangeLanguagePref(lang);
             OnChangeLanguagePref();
         }
+    }
+
+    public void DeleteAndQuit() {
+        PlayerPrefs.DeleteAll();
+        Application.Quit();
     }
     #endregion
 

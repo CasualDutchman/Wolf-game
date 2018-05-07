@@ -9,19 +9,15 @@ public class GroupMovement : MonoBehaviour {
 
     WolfPack wolfPack;
     public UIManager uiManager;
-
     public GameObject wolfPrefab;
 
     public Transform cameraRig;
 
-    [HideInInspector]
     public Vector3[] relativePositions;
-    [HideInInspector]
     public Vector3[] newRelativePositions;
-    [HideInInspector]
     public Vector3[] oldRelativePositions;
     [HideInInspector]
-    public Transform[] wolves;
+    public List<Transform> wolves;
 
     Enemy attackingEnemy;
 
@@ -32,7 +28,12 @@ public class GroupMovement : MonoBehaviour {
     float repositionTimer;
     bool reposition;
 
+    public AnimationCurve repositionCurve;
+    public AnimationCurve lerpCurve;
+
     public float maxSpeed = 3;
+    float stopTime = 0;
+    Vector3 tempDir;
 
     [HideInInspector]
     public Vector3 centerOfWolves;
@@ -47,6 +48,8 @@ public class GroupMovement : MonoBehaviour {
 
     bool uiHit = false;
 
+    float treeTimer;
+
     void Awake() {
         instance = this;
     }
@@ -57,7 +60,6 @@ public class GroupMovement : MonoBehaviour {
         relativePositions = new Vector3[amountOfWolves];
         newRelativePositions = new Vector3[amountOfWolves];
         oldRelativePositions = new Vector3[amountOfWolves];
-        wolves = new Transform[amountOfWolves];
         for (int i = 0; i < amountOfWolves; i++) {
             Vector2 v2 = Random.insideUnitCircle * maxSpeed;
             newRelativePositions[i] = new Vector3(v2.x, 0, v2.y);
@@ -65,12 +67,13 @@ public class GroupMovement : MonoBehaviour {
 
             GameObject go = Instantiate(wolfPrefab, RelativePositionToWorld(i), Quaternion.identity);
             go.GetComponent<WolfMovement>().id = i;
-            go.GetComponent<WolfMovement>().maxSpeed = Random.Range(maxSpeed - 0.3f, maxSpeed + 0.3f);
+            go.GetComponent<WolfMovement>().maxSpeed = maxSpeed;
 
-            wolves[i] = go.transform;
+            wolves.Add(go.transform);
 
             reposition = true;
         }
+
 	}
 	
 	void Update () {
@@ -88,14 +91,45 @@ public class GroupMovement : MonoBehaviour {
             if (Input.GetMouseButton(0) && !uiHit) {
                 hold = Input.mousePosition;
                 dir = hold - begin;
-                dir = Vector3.ClampMagnitude(dir * 0.1f, 5);
+                Vector2 part = new Vector2(dir.x / (float)Display.main.systemWidth, dir.y / (float)Display.main.systemHeight);
+                dir = Vector3.ClampMagnitude(dir * (part.magnitude * .1f), maxSpeed);
 
                 transform.Translate(new Vector3(dir.x, 0, dir.y) * Time.deltaTime, Space.World);
+                for (int i = 0; i < wolves.Count; i++) {
+                    Vector3 pos = RelativePositionToWorld(i);
+                    wolves[i].position = pos;
+                    wolves[i].GetComponent<WolfMovement>().velocity = new Vector3(dir.x, 0, dir.y);
+                }
             }
 
             if (Input.GetMouseButtonUp(0) && !uiHit) {
+                hold = Input.mousePosition;
+                dir = hold - begin;
+                Vector2 part = new Vector2(dir.x / (float)Display.main.systemWidth, dir.y / (float)Display.main.systemHeight);
+                dir = Vector3.ClampMagnitude(dir * (part.magnitude * .1f), maxSpeed);
+
                 knob.enabled = false;
                 transform.position = centerOfWolves;
+
+                for (int i = 0; i < wolves.Count; i++) {
+                    relativePositions[i] = wolves[i].position - centerOfWolves;
+                    reposition = false;
+                    timer = 0;
+                }
+                stopTime = 1;
+                tempDir = dir;
+            }
+        }
+
+        if (stopTime > 0 && !Input.GetMouseButton(0)) {
+            stopTime -= Time.deltaTime;
+            if (stopTime > 0) {
+                dir = tempDir * stopTime;
+                transform.Translate(new Vector3(dir.x, 0, dir.y) * Time.deltaTime, Space.World);
+                for (int i = 0; i < wolves.Count; i++) {
+                    wolves[i].position = RelativePositionToWorld(i);
+                    wolves[i].GetComponent<WolfMovement>().velocity = new Vector3(dir.x, 0, dir.y);
+                }
             }
         }
 
@@ -103,8 +137,8 @@ public class GroupMovement : MonoBehaviour {
         foreach (var item in wolves) {
             centerOfWolves += item.position;
         }
-        centerOfWolves /= wolves.Length;
-        cameraRig.position = centerOfWolves;
+        centerOfWolves /= wolves.Count;
+        cameraRig.position = Vector3.Lerp(cameraRig.position, centerOfWolves, 0.7f);
 
         timer += Time.deltaTime;
         if (timer > 10) {
@@ -120,8 +154,18 @@ public class GroupMovement : MonoBehaviour {
             repositionTimer += Time.deltaTime * 0.15f;
 
             for (int i = 0; i < amountOfWolves; i++) {
-                Vector3 v3 = Vector3.Lerp(oldRelativePositions[i], newRelativePositions[i], repositionTimer);
+                Vector3 v3 = Vector3.Lerp(oldRelativePositions[i], newRelativePositions[i], lerpCurve.Evaluate(repositionTimer));
                 relativePositions[i] = v3;
+
+                if (!Input.GetMouseButton(0)) {
+                    Vector3 v = newRelativePositions[i] - oldRelativePositions[i];
+                    v = Vector3.ClampMagnitude(v, repositionCurve.Evaluate(repositionTimer) * 2);
+                    wolves[i].GetComponent<WolfMovement>().velocity = v;
+                    Vector3 pos = RelativePositionToWorld(i);
+                    pos.y = 0;
+                    wolves[i].position = pos;
+                }
+                //wolves[i].GetComponent<WolfMovement>().velocity = newRelativePositions[i] - oldRelativePositions[i];
             }
 
             if (repositionTimer >= 1) {
@@ -129,6 +173,10 @@ public class GroupMovement : MonoBehaviour {
                 oldRelativePositions = newRelativePositions;
                 newRelativePositions = new Vector3[amountOfWolves];
                 reposition = false;
+
+                //for (int i = 0; i < amountOfWolves; i++) {
+                //    wolves[i].GetComponent<WolfMovement>().velocity = Vector3.ClampMagnitude(wolves[i].GetComponent<WolfMovement>().velocity, 0.01f);
+                //}
             }
         }
 
@@ -154,8 +202,8 @@ public class GroupMovement : MonoBehaviour {
         wolfPack.atRestingPlace = (Transform)RestingManager.instance.FromPosition(centerOfWolves, 3) != null;
 	}
 
-    public void Attack(float damage) {
-        wolfPack.Damage(damage);
+    public void Attack(float damage, int level) {
+        wolfPack.Damage(damage, level);
     }
 
     public void AddFood(float amount) {

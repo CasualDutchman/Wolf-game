@@ -46,6 +46,7 @@ public class LocalizationManager : MonoBehaviour {
     /// <param name="key">unlocalized key</param>
     /// <returns>Localized value</returns>
     public string GetLocalizedValue(string key) {
+        key = key.ToLower();
         string result = "Missing Localized Info. key = " + key;
 
         if (dictionary.ContainsKey(key)) {
@@ -61,7 +62,6 @@ public class LocalizationManager : MonoBehaviour {
     /// <param name="lang">language index string</param>
     IEnumerator LoadDictionary(string lang) {
         dictionary = new Dictionary<string, string>();
-        string filePath = Path.Combine(Application.streamingAssetsPath, lang + ".txt");
 
         TextAsset textass = Resources.Load("Languages/" + lang) as TextAsset;
 

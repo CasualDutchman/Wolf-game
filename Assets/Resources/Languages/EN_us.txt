@@ -10,3 +10,13 @@ settingaudio=Audio
 settingaudioonoff=On/Off
 settingenglish=English
 settingdutch=Nederlands
+
+//skills
+skillhunterinstinctname=Hunter's instinct
+skillhunterintelligencename=Hunter's intelligence
+skillscentpreyname=Scent of prey
+skillseasonedhuntername=Seasoned hunter
+skillshareknowledgename=Shared knowledge
+skillsilenthuntername=Silent hunter
+skillsurvivalintinctname=Survival intinct
+skillwolfbondname=Wolf bond

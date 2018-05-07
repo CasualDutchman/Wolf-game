@@ -10,11 +10,11 @@ public class Worldmanager : MonoBehaviour {
     public float blendMultiplier = 0.001f;
     float blend = 0;
     public Material mat;
-    public Camera textureCamera;
+
+    Settingsmanager settings;
+
     public float renderInterval;
     float renderTimer;
-
-    public GameObject[] treePrefab;
 
     public Transform target;
 
@@ -25,7 +25,7 @@ public class Worldmanager : MonoBehaviour {
 
     public Material groundMaterial;
 
-    Vector2 playerChunkPos;
+    Vector2 playerChunkPos = new Vector2(float.MinValue, float.MaxValue);
     [HideInInspector]
     public bool updated = false;
     [HideInInspector]
@@ -51,6 +51,8 @@ public class Worldmanager : MonoBehaviour {
 
     public Biome[] biomes;
 
+    public float zOffset = 10;
+
     private void Awake() {
         //Application.targetFrameRate = 60;
 
@@ -58,12 +60,12 @@ public class Worldmanager : MonoBehaviour {
 
         loadingUI.SetActive(showLoadingScreen);
 
-        UpdateChunk();
+        //UpdateChunk();
     }
 
     void Start() {
         managers = GetComponents<IManager>();
-        textureCamera.Render();
+        settings = GetComponent<Settingsmanager>();
     }
 
     void OnDisable() {
@@ -71,7 +73,7 @@ public class Worldmanager : MonoBehaviour {
     }
 
     void Update () {
-        Vector2 newChunkPos = new Vector2(Mathf.FloorToInt(target.position.x / TileSize), Mathf.FloorToInt(target.position.z / TileSize));
+        Vector2 newChunkPos = new Vector2(Mathf.FloorToInt(target.position.x / TileSize), Mathf.FloorToInt((target.position.z + zOffset) / TileSize));
 
         if (mat != null) {
             blend += Time.deltaTime * blendMultiplier;
@@ -80,7 +82,7 @@ public class Worldmanager : MonoBehaviour {
             }
             renderTimer += Time.deltaTime;
             if (renderTimer >= renderInterval) {
-                textureCamera.Render();
+                settings.UpdateTreeCamera();
                 renderTimer = 0;
             }
 
@@ -116,7 +118,6 @@ public class Worldmanager : MonoBehaviour {
         checkChunksTimer += Time.deltaTime;
 
         if (checkChunksTimer >= 30) {
-
             foreach (Transform child in transform) {
                 if (!chunkDictionary.ContainsKey(new Vector2(child.position.x / TileSize, child.position.z / TileSize))) {
                     Destroy(child.gameObject);
@@ -135,11 +136,10 @@ public class Worldmanager : MonoBehaviour {
 
         for (int xOffset = -2; xOffset <= 3; xOffset++) {
             for (int yOffset = 0; yOffset <= 2; yOffset++) {
-                if ((xOffset == -2 || xOffset == 3) && yOffset <= 0) {
+                if ((xOffset == -2 || xOffset == 3) && yOffset < 2)
                     continue;
-                }
 
-                Vector2 viewedChunkPos = new Vector2(Mathf.FloorToInt(target.position.x / TileSize) + xOffset, Mathf.FloorToInt(target.position.z / TileSize) + yOffset);
+                Vector2 viewedChunkPos = new Vector2(Mathf.FloorToInt(target.position.x / TileSize) + xOffset, Mathf.FloorToInt((target.position.z + zOffset) / TileSize) + yOffset);
                 lists.Add(viewedChunkPos);
 
                 if (!chunkDictionary.ContainsKey(viewedChunkPos)) {
@@ -175,7 +175,7 @@ public class Worldmanager : MonoBehaviour {
             chunkDictionary.Add(v, g);
     }
 
-    public void PlaceTree(Vector3 pos, Transform parent, int biomeID, int layerID) {
+    public void PlaceTree(Vector3 pos, Transform parent, int biomeID, int layerID, Vector2 chunkPos) {
         FoliageItem foliage = biomes[biomeID].types[layerID];
         if (!foliage.isNothing) {
             System.Random prng = new System.Random((int)(pos.x + pos.y * pos.z) + biomeID);
@@ -185,7 +185,7 @@ public class Worldmanager : MonoBehaviour {
             float newy = (int)pos.x % 2 == 0 ? 0 : 0.5f;
             go.transform.localPosition = pos + new Vector3((prng.Next(0, 200) - 100) * 0.001f + newx, 0f, (prng.Next(0, 200) - 100) * 0.0015f + newy);
 
-            go.transform.localEulerAngles = new Vector3(-90, 0, (prng.Next(0, 30) - 15));
+            go.transform.localEulerAngles = new Vector3(0, (prng.Next(0, 30) - 15), (prng.Next(0, 30) - 15));
         }
     }
 }
@@ -323,12 +323,6 @@ public class Chunk {
 
         meshRenderer.material = Worldmanager.instance.groundMaterial;
 
-        foreach (KeyValuePair<Vector3, int> foli in foliageMap) {
-            Worldmanager.instance.PlaceTree(foli.Key, chunkObject.transform, 0, foli.Value);
-        }
-
-        //Debug.Log("Chunk Done Loading");
-
         verts.Clear();
         uvs.Clear();
         tris.Clear();
@@ -337,19 +331,41 @@ public class Chunk {
         meshRenderer = null;
         meshCollider = null;
 
-        foliageMap.Clear();
-
-        int chunkInfo = Noise.GetChunkInfo((int)chunkPos.x, (int)chunkPos.y);
+        List<Vector3> obstacle = new List<Vector3>();
 
         foreach (IManager manager in Worldmanager.instance.managers) {
-            if ((chunkInfo & (1 << manager.GetBitID() - 1)) != 0) { // check if a certain bit is not 0
-                manager.Spawn(location);
-
-                chunkObject.name += " " + chunkInfo;
+            for (int y = 0; y < 3; y++) {
+                for (int x = 0; x < 3; x++) {
+                    if(manager.IsSpawn(((int)chunkPos.x * 3) + x, ((int)chunkPos.y * 3) + y)) {
+                        Vector3 newLoc = new Vector3((chunkPos.x * size) + ((size * 0.33f) * x), 0, (chunkPos.y * size) + ((size * 0.33f) * y));
+                        manager.Spawn(newLoc);
+                        if (!manager.SpawnTrees()) {
+                            obstacle.Add(newLoc);
+                        }
+                    }
+                }
             }
         }
 
+        foreach (KeyValuePair<Vector3, int> foli in foliageMap) {
+            if(!InBounds(obstacle, chunkPos * size, foli.Key, 3.5f))
+                Worldmanager.instance.PlaceTree(foli.Key, chunkObject.transform, 0, foli.Value, chunkPos);
+        }
+        foliageMap.Clear();
+
         Worldmanager.instance.AddToChunkDictionary(chunkPos, chunkObject);
         Worldmanager.instance.updated = false;
+    }
+
+    bool InBounds(List<Vector3> obstacle, Vector2 v2, Vector3 vec, float radius) {
+        if (obstacle.Count <= 0)
+            return false;
+
+        foreach (Vector3 vec3 in obstacle) {
+            if (Vector3.Distance(vec3, new Vector3(v2.x + vec.x, 0, v2.y + vec.z)) < radius) {
+                return true;
+            }
+        }
+        return false;
     }
 }

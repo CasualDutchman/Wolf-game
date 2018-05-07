@@ -41,4 +41,5 @@ public class UIComponents : MonoBehaviour {
     public Transform buttonBackSettings;
     public Transform buttonEnglish;
     public Transform buttonDutch;
+    public Transform buttonQuitDelete;
 }

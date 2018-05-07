@@ -4,7 +4,11 @@ using UnityEngine;
 
 public interface IManager {
 
-    int GetBitID();
+    bool IsSpawn(int x, int y);
+
+    bool SpawnTrees();
+
+    string Info();
 
     void Spawn(Vector3 pos);
 

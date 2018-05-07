@@ -15,14 +15,8 @@ public class WolfPack : MonoBehaviour {
     public float attackDamage;
     public float attackSpeed;
     public int level;
-    public int experience;
+    public float experience;
     public int maxExperience;
-
-    //[Header("UI")]
-    //public Image healthbar;
-    //public Image foodbar;
-    //public Text levelText;
-    //public Image experienceBar;
 
     [Header("Misc")]
     public float foodConsumptionInterval;
@@ -32,16 +26,41 @@ public class WolfPack : MonoBehaviour {
 
     public bool atRestingPlace;
 
+    public string wolfBondCode, seasonedHunterCode, shareKnowledgeCode;
+
 	void Start () {
         health = maxhealth;
         food = maxFood;
 
         uimanager = UIManager.instance;
 
+        Load();
+
         Updatebars();
         UpdateExperienceTexts();
     }
 	
+    public void Save() {
+        string str = "";
+        str += health + "/";
+        str += food + "/";
+        str += level + "/";
+        str += experience;
+
+        PlayerPrefs.SetString("WolfPack", str);
+    }
+
+    public void Load() {
+        if (PlayerPrefs.HasKey("WolfPack")) {
+            string str = PlayerPrefs.GetString("WolfPack");
+            string[] data = str.Split('/');
+            health = float.Parse(data[0]);
+            food = float.Parse(data[1]);
+            level = int.Parse(data[2]);
+            experience = float.Parse(data[3]);
+        }
+    }
+
 	void Update () {
         foodTimer += Time.deltaTime;
         if (foodTimer >= foodConsumptionInterval) {
@@ -74,8 +93,12 @@ public class WolfPack : MonoBehaviour {
         uimanager.UpdateLevelText(level);
     }
 
-    public void Damage(float amount) {
-        health -= amount;
+    public void Damage(float amount, int animalLevel) {
+        if (SkillManager.instance.IsSkillActive(seasonedHunterCode))
+            if (animalLevel < level)
+                return;
+
+        health -= amount - (SkillManager.instance.IsSkillActive(wolfBondCode) ? 5 : 0);
 
         Updatebars();
     }
@@ -86,8 +109,8 @@ public class WolfPack : MonoBehaviour {
         Updatebars();
     }
 
-    public void AddXP(int amount) {
-        experience += amount;
+    public void AddXP(float amount) {
+        experience += amount + (amount * SkillManager.instance.GetSkillShareAmount(shareKnowledgeCode));
 
         if (experience >= maxExperience) {
             level++;

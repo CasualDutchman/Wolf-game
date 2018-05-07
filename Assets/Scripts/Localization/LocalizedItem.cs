@@ -10,6 +10,8 @@ public class LocalizedItem : MonoBehaviour {
     public string key;
     string value;
 
+    object[] pars;
+
     public void Register(string k) {
         _text = GetComponent<Text>();
         key = k;
@@ -17,10 +19,13 @@ public class LocalizedItem : MonoBehaviour {
 
     public void Change() {
         value = LocalizationManager.instance.GetLocalizedValue(key);
+        if (pars != null && pars.Length > 0)
+            value = string.Format(value, pars);
         _text.text = value;
     }
 
     public void UpdateItem(params object[] par) {  
         _text.text = string.Format(value, par);
+        pars = par;
     }
 }

@@ -6,6 +6,8 @@ public class RestingManager : MonoBehaviour, IManager {
 
     public static RestingManager instance;
 
+    public Noise restingNoise;
+
     List<Transform> restingAreas = new List<Transform>();
     public GameObject restingPrefab;
 
@@ -13,13 +15,24 @@ public class RestingManager : MonoBehaviour, IManager {
         instance = this;
     }
 
-    public int GetBitID() {
-        return 2;
+    public bool IsSpawn(int x, int y) {
+        return restingNoise.IsOn(x, y);
+    }
+
+    public bool SpawnTrees() {
+        return false;
+    }
+
+    public string Info() {
+        return "R";
     }
 
     public void Spawn(Vector3 pos) {
+        Ray ray = new Ray(pos + Vector3.up * 10, Vector3.down);
+        RaycastHit hit;
+        Physics.Raycast(ray, out hit, 15, LayerMask.GetMask("Water"));
         GameObject go = Instantiate(restingPrefab);
-        go.transform.position = pos + Vector3.up;
+        go.transform.position = hit.point;
 
         restingAreas.Add(go.transform);
     }

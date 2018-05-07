@@ -20,11 +20,14 @@ MonoBehaviour:
   settings: {fileID: 11400000, guid: a182e55c67686594a86aa2fdadee6030, type: 2}
   types:
   - isNothing: 1
+    alpha: 0
     itemsToChoose:
     - {fileID: 0}
   - isNothing: 0
+    alpha: 0
     itemsToChoose:
     - {fileID: 0}
   - isNothing: 0
+    alpha: 0
     itemsToChoose:
     - {fileID: 0}

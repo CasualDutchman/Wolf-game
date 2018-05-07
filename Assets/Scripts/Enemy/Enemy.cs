@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public enum AnimalType { Raccoon, Fox, Coyote, Jackal, Dog, Cougar, Tiger, Bear, Grizzly }
+public enum AnimalType { Raccoon, Fox, Coyote, Jackal, Dog, Cougar, Tiger, Bear, Grizzly, Reindeer, Moose, Bison, Musk_ox }
 
 public class Enemy : MonoBehaviour {
 
@@ -11,10 +11,14 @@ public class Enemy : MonoBehaviour {
     Vector3 target;
     Vector3 velocity;
 
+    public AnimalType animalType = AnimalType.Fox;
+
     public float health;
     public float maxHealth;
 
     public float maxSpeed;
+
+    public int level = 1;
 
     public Transform targetWolf;
 
@@ -33,7 +37,7 @@ public class Enemy : MonoBehaviour {
                 timer += Time.deltaTime;
                 if (timer >= attackSpeed) {
                     timer -= attackSpeed;
-                    targetWolf.GetComponent<GroupMovement>().Attack(attackDamage);
+                    targetWolf.GetComponent<GroupMovement>().Attack(attackDamage, level);
                 }
             }
         } 
@@ -60,7 +64,7 @@ public class Enemy : MonoBehaviour {
             transform.rotation = Quaternion.LookRotation(look);
         }
 
-        Ray ray = new Ray(transform.position + (Vector3.up * 3), Vector3.down);
+        Ray ray = new Ray(transform.position + (Vector3.up * 7), Vector3.down);
         RaycastHit hit;
 
         if (Physics.Raycast(ray, out hit, 10, LayerMask.GetMask("Water"))) {
@@ -75,6 +79,7 @@ public class Enemy : MonoBehaviour {
         if (health < 0) {
             EnemyManager.instance.Remove(this);
             GroupMovement.instance.KillEnemy();
+            SkillManager.instance.KillAnimal(animalType);
             Destroy(gameObject);
             return true;
         }

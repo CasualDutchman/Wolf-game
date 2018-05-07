@@ -2,8 +2,52 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Noise {
+[CreateAssetMenu(fileName = "Noise", menuName = "Generation/Noise", order = 1)]
+public class Noise : ScriptableObject{
 
+    public AnimationCurve curve;
+
+    [Range(2, 20)]
+    public float bigFloat;
+    [Range(1, 10)]
+    public float normalFloat;
+    [Range(0.1f, 5)]
+    public float smallFloat;
+
+    [Range(0.0001f, 1f)]
+    public float threshold;
+
+    public bool IsOn(int x, int y) {
+        float f = Mathf.PerlinNoise(x / bigFloat, y / bigFloat);
+        float f2 = Mathf.PerlinNoise(x / normalFloat, y / normalFloat);
+        float f3 = Mathf.PerlinNoise(x / smallFloat, y / smallFloat);
+        //f = (f * multiplier1) + (f2 * multiplier2) + (f3 * multiplier3) + (f4 * multiplier4);
+        //f /= (multiplier1 + multiplier2 + multiplier3 + multiplier4);
+        f = f + f2 + f3;
+        f /= 3;
+
+        if (f < 0)
+            f = 0.001f;
+
+        if (f >= 1)
+            f = 0.999f;
+
+        float value = f;
+        if (curve != null) {
+            value = curve.Evaluate(f);
+
+            if (value < 0)
+                value = 0.001f;
+
+            if (value >= 1)
+                value = 0.999f;
+        }
+
+        return value < threshold;
+    }
+
+
+    /*
     public enum NormalizeMode { Local, Global };
 
     public static int GetChunkInfo(int chunkX, int chunkY) {
@@ -256,4 +300,5 @@ public class NoiseSettings {
         lacunarity = Mathf.Max(lacunarity, 1);
         persistance = Mathf.Clamp01(persistance);
     }
+    */
 }

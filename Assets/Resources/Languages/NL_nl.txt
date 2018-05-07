@@ -10,3 +10,13 @@ settingaudio=Audio
 settingaudioonoff=Aan/Uit
 settingenglish=English
 settingdutch=Nederlands
+
+//skills
+skillhunterinstinctname=Jagers instinct
+skillhunterintelligencename=Jagers intellegentie
+skillscentpreyname=Geur van de prooi
+skillseasonedhuntername=Geharde jager
+skillshareknowledgename=Gedeelde kennis
+skillsilenthuntername=Stille jager
+skillsurvivalintinctname=Overlevings intinct
+skillwolfbondname=Band van wolven

@@ -6,6 +6,8 @@ public class EnemyManager : MonoBehaviour, IManager {
 
     public static EnemyManager instance;
 
+    public Noise enemyNoise;
+
     List<Enemy> enemies = new List<Enemy>();
     public GameObject enemyPrefab;
 
@@ -13,11 +15,19 @@ public class EnemyManager : MonoBehaviour, IManager {
         instance = this;
 	}
 	
-    public int GetBitID() {
-        return 1;
+    public bool IsSpawn(int x, int y) {
+        return enemyNoise.IsOn(x, y);
     }
 
-	public void Spawn(Vector3 pos) {
+    public bool SpawnTrees() {
+        return true;
+    }
+
+    public string Info() {
+        return "E";
+    }
+
+    public void Spawn(Vector3 pos) {
         GameObject go = Instantiate(enemyPrefab);
         go.transform.position = pos;
 
