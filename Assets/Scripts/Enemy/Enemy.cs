@@ -2,9 +2,11 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public enum AnimalType { Raccoon, Fox, Coyote, Jackal, Dog, Cougar, Tiger, Bear, Grizzly, Reindeer, Moose, Bison, Musk_ox }
+public enum AnimalType { Raccoon, Fox, Coyote, Jackal, Dog, Cougar, Tiger, Bear, Grizzly, Reindeer, Moose, Bison, Muskox }
 
 public class Enemy : MonoBehaviour {
+
+    Animator anim;
 
     float timer;
 
@@ -26,6 +28,8 @@ public class Enemy : MonoBehaviour {
     public float attackSpeed;
 
     void Start () {
+        anim = GetComponent<Animator>();
+
         target = transform.position;
         health = maxHealth;
     }
@@ -53,9 +57,14 @@ public class Enemy : MonoBehaviour {
             }
         }
 
-        velocity = target - transform.position;
-        velocity = Vector3.ClampMagnitude(velocity, 1);
-        velocity = Vector3.ClampMagnitude(velocity * Time.deltaTime * maxSpeed, maxSpeed);
+        Vector3 dir = target - transform.position;
+        velocity += dir.normalized * Time.deltaTime;
+        velocity = Vector3.ClampMagnitude(velocity, maxSpeed);
+
+        anim.SetFloat("Blend", velocity.magnitude / maxSpeed);
+
+        //velocity = Vector3.ClampMagnitude(velocity, 1);
+        //velocity = Vector3.ClampMagnitude(velocity * Time.deltaTime * maxSpeed, maxSpeed);
         transform.position += velocity;
 
         Vector3 look = velocity;

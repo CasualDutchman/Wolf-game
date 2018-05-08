@@ -1,0 +1,200 @@
+fileFormatVersion: 2
+guid: 94235e35be110994dbec99167239aa20
+timeCreated: 1525784651
+licenseType: Free
+ModelImporter:
+  serializedVersion: 22
+  fileIDToRecycleName:
+    100000: bush2
+    100002: flower
+    100004: mushroom
+    100006: //RootNode
+    100008: RAbush1
+    100010: RAbush2
+    100012: RAfern1
+    100014: RAfern2
+    100016: RAfern3
+    100018: RAstone1
+    100020: RAstone10
+    100022: RAstone2
+    100024: RAstone3
+    100026: RAstone4
+    100028: RAstone5
+    100030: RAstone6
+    100032: RAstone7
+    100034: RAstone8
+    100036: RAstone9
+    100038: RAtreetrunk
+    100040: RAwater
+    100042: stone1
+    100044: stone2
+    400000: bush2
+    400002: flower
+    400004: mushroom
+    400006: //RootNode
+    400008: RAbush1
+    400010: RAbush2
+    400012: RAfern1
+    400014: RAfern2
+    400016: RAfern3
+    400018: RAstone1
+    400020: RAstone10
+    400022: RAstone2
+    400024: RAstone3
+    400026: RAstone4
+    400028: RAstone5
+    400030: RAstone6
+    400032: RAstone7
+    400034: RAstone8
+    400036: RAstone9
+    400038: RAtreetrunk
+    400040: RAwater
+    400042: stone1
+    400044: stone2
+    2100000: No Name
+    2300000: bush2
+    2300002: flower
+    2300004: mushroom
+    2300006: RAbush1
+    2300008: RAbush2
+    2300010: RAfern1
+    2300012: RAfern2
+    2300014: RAfern3
+    2300016: RAstone1
+    2300018: RAstone10
+    2300020: RAstone2
+    2300022: RAstone3
+    2300024: RAstone4
+    2300026: RAstone5
+    2300028: RAstone6
+    2300030: RAstone7
+    2300032: RAstone8
+    2300034: RAstone9
+    2300036: RAtreetrunk
+    2300038: RAwater
+    2300040: stone1
+    2300042: stone2
+    3300000: bush2
+    3300002: flower
+    3300004: mushroom
+    3300006: RAbush1
+    3300008: RAbush2
+    3300010: RAfern1
+    3300012: RAfern2
+    3300014: RAfern3
+    3300016: RAstone1
+    3300018: RAstone10
+    3300020: RAstone2
+    3300022: RAstone3
+    3300024: RAstone4
+    3300026: RAstone5
+    3300028: RAstone6
+    3300030: RAstone7
+    3300032: RAstone8
+    3300034: RAstone9
+    3300036: RAtreetrunk
+    3300038: RAwater
+    3300040: stone1
+    3300042: stone2
+    4300000: RAstone3
+    4300002: RAstone2
+    4300004: RAstone5
+    4300006: RAstone6
+    4300008: RAstone7
+    4300010: RAstone9
+    4300012: RAstone10
+    4300014: RAstone4
+    4300016: RAstone8
+    4300018: RAbush2
+    4300020: RAbush1
+    4300022: RAstone1
+    4300024: RAfern2
+    4300026: RAfern3
+    4300028: RAwater
+    4300030: RAtreetrunk
+    4300032: RAfern1
+    4300034: flower
+    4300036: mushroom
+    4300038: bush2
+    4300040: stone1
+    4300042: stone2
+  externalObjects: {}
+  materials:
+    importMaterials: 1
+    materialName: 0
+    materialSearch: 1
+    materialLocation: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    resampleCurves: 1
+    optimizeGameObjects: 0
+    motionNodeName: 
+    rigImportErrors: 
+    rigImportWarnings: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    importAnimatedCustomProperties: 0
+    animationCompression: 1
+    animationRotationError: 0.5
+    animationPositionError: 0.5
+    animationScaleError: 0.5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    extraUserProperties: []
+    clipAnimations: []
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 1
+    meshCompression: 0
+    addColliders: 0
+    importVisibility: 1
+    importBlendShapes: 1
+    importCameras: 1
+    importLights: 1
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    optimizeMeshForGPU: 1
+    keepQuads: 0
+    weldVertices: 1
+    preserveHierarchy: 0
+    indexFormat: 0
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+    useFileScale: 1
+  tangentSpace:
+    normalSmoothAngle: 60
+    normalImportMode: 0
+    tangentImportMode: 3
+    normalCalculationMode: 4
+  importAnimation: 1
+  copyAvatar: 0
+  humanDescription:
+    serializedVersion: 2
+    human: []
+    skeleton: []
+    armTwist: 0.5
+    foreArmTwist: 0.5
+    upperLegTwist: 0.5
+    legTwist: 0.5
+    armStretch: 0.05
+    legStretch: 0.05
+    feetSpacing: 0
+    rootMotionBoneName: 
+    rootMotionBoneRotation: {x: 0, y: 0, z: 0, w: 1}
+    hasTranslationDoF: 0
+    hasExtraRoot: 0
+    skeletonHasParents: 1
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 0
+  humanoidOversampling: 1
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

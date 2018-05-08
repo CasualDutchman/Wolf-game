@@ -37,6 +37,10 @@ public class Settingsmanager : MonoBehaviour {
         settingsLoaded = true;
     }
 
+    public void DisableSettings() {
+        settingsLoaded = false;
+    }
+
     public void OnToggleAudio(bool b, string str) {
         if (settingsLoaded) {
             audioSettings = b ? OnOff.On : OnOff.Off;

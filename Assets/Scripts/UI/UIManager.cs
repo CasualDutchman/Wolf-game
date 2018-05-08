@@ -37,22 +37,21 @@ public class UIManager : MonoBehaviour {
     public string unlocalizedExperience;
     public string unlocalizedLevel;
     public string unlocalizedAlpha;
-    public float sideAppearTime = 1;
-    bool sideOpen = false;
-    bool sideChanging = false;
-    Vector3 localSizeOrigin;
 
     [Header("Alpha")]
     public string unlocalizedAlphaTitle;
 
     [Header("Settings")]
     public string unlocalizedSettingsTitle;
+    public string unlocalizedLanguage;
+    public string unlocalizedTutorial;
+    public string unlocalizedTutorialStart;
     public string unlocalizedGraphics;
-    public string unlocalizedGraphicsOnOff;
+    public string unlocalizedGraphicsLow;
+    public string unlocalizedGraphicsMed;
+    public string unlocalizedGraphicsHigh;
     public string unlocalizedAudio;
     public string unlocalizedAudioOnOff;
-    public string unlocalizedEnglish;
-    public string unlocalizedDutch;
 
     void Awake() {
         instance = this;
@@ -61,7 +60,6 @@ public class UIManager : MonoBehaviour {
     void Start() {
         settings = Settingsmanager.instance;
         skillManager = GetComponent<SkillManager>();
-        localSizeOrigin = components.buttonSide.localPosition;
         RegisterTexts();
         LoadSettings();
     }
@@ -92,9 +90,8 @@ public class UIManager : MonoBehaviour {
         RegisterText(components.textExperience, unlocalizedExperience);
         RegisterText(components.textLevel, unlocalizedLevel);
         RegisterButton(components.buttonSettings, () => ChangeScreen(Screens.Settings));
-        RegisterButton(components.buttonSide, () => OnSide());
         RegisterButton(components.buttonAlpha, () => ChangeScreen(Screens.Alpha));
-        RegisterText(components.buttonAlpha.GetChild(0), unlocalizedAlpha);
+        //RegisterText(components.buttonAlpha.GetChild(0), unlocalizedAlpha);
 
         //Alpha
         RegisterSkill(components.skillA1, 0);
@@ -102,22 +99,27 @@ public class UIManager : MonoBehaviour {
         RegisterSkill(components.skillB1, 2);
         RegisterSkill(components.skillB2, 3);
         RegisterSkill(components.skillB3, 4);
+        RegisterButton(components.skillDescBack, () => HideSkillDesc());
         RegisterButton(components.buttonBackAlpha, () => ChangeScreen(Screens.Hud));
 
         //Settings
         RegisterButton(components.buttonBackSettings, () => ChangeScreen(Screens.Hud));
         RegisterText(components.textSettingsTitle, unlocalizedSettingsTitle);
+        RegisterText(components.textTutorial, unlocalizedTutorial);
+        RegisterText(components.textTutorialStart, unlocalizedTutorialStart);
+        RegisterText(components.textLanguage, unlocalizedLanguage);
         RegisterText(components.textGraphical, unlocalizedGraphics);
-        RegisterText(components.textGraphicalOnOff, unlocalizedGraphicsOnOff);
+        RegisterText(components.textGraphicalLow, unlocalizedGraphicsLow);
+        RegisterText(components.textGraphicalMed, unlocalizedGraphicsMed);
+        RegisterText(components.textGraphicalHigh, unlocalizedGraphicsHigh);
         RegisterText(components.textAudio, unlocalizedAudio);
         RegisterText(components.textAudioOnOff, unlocalizedAudioOnOff);
-        RegisterToggle(components.buttonGraphics, (b) => { OnToggleGraphical(b);});
+        RegisterButton(components.buttonTutorial, () => OnTutorial());
         RegisterToggle(components.buttonAudio, (b) => { OnToggleAudio(b); });
         RegisterButton(components.buttonEnglish, () => OnChangeLanguage("EN_us"));
-        RegisterText(components.buttonEnglish.GetChild(0), unlocalizedEnglish);
         RegisterButton(components.buttonDutch, () => OnChangeLanguage("NL_nl"));
-        RegisterText(components.buttonDutch.GetChild(0), unlocalizedDutch);
-        RegisterButton(components.buttonQuitDelete, () => DeleteAndQuit());
+        RegisterButton(components.buttonGraphicsHigh, () => OnToggleGraphical(true));
+        RegisterButton(components.buttonGraphicsLow, () => OnToggleGraphical(false));
     }
 
     public bool IsHittingUI() {
@@ -141,9 +143,10 @@ public class UIManager : MonoBehaviour {
 
     void RegisterSkill(Transform t, int i) {
         skillHolder[i] = new SkillHolder() {
-            skillRadial = t.GetChild(1).GetComponent<Image>(),
-            skillName = t.GetChild(2).GetChild(0).GetComponent<TextMeshProUGUI>()
+            skillRadial = t.GetChild(0).GetComponent<Image>(),
+            skillName = t.GetChild(1).GetComponent<TextMeshProUGUI>()
         };
+        RegisterButton(t, () => ShowSkillDesc(i));
     }
 
     void RegisterText(Transform t, string key) {
@@ -182,11 +185,7 @@ public class UIManager : MonoBehaviour {
     }
 
     public void ChangeScreen(Screens screen) {
-        if(screen == Screens.Hud) {
-            components.buttonSide.localPosition = localSizeOrigin;
-            sideOpen = false;
-        }
-        else if (screen == Screens.Alpha) {
+        if (screen == Screens.Alpha) {
             OnAlphaOpened();
         }
         StartCoroutine(IEChangeScreen(screen));
@@ -210,40 +209,33 @@ public class UIManager : MonoBehaviour {
                 skillHolder[i].skillRadial.fillAmount = 1;
             }
         }
+
+        components.skillDescriptionBox.gameObject.SetActive(false);
+    }
+
+    public void HideSkillDesc() {
+        components.skillDescriptionBox.gameObject.SetActive(false);
+    }
+
+    public void ShowSkillDesc(int i) {
+        Debug.Log("ShowSkill");
+        components.skillDescTitle.GetComponent<TextMeshProUGUI>().text = LocalizationManager.instance.GetLocalizedValue(skillManager.skills[i].skill.unlocalizedName);
+        components.skillDescDesc.GetComponent<TextMeshProUGUI>().text = LocalizationManager.instance.GetLocalizedValue(skillManager.skills[i].skill.unlocalizedDescription);
+
+        if (!string.IsNullOrEmpty(skillManager.skills[i].skill.unlocalizedRequire)) {
+            string reqMessage = LocalizationManager.instance.GetLocalizedValue(skillManager.skills[i].skill.unlocalizedRequire);
+            string animalName = LocalizationManager.instance.GetLocalizedValue(skillManager.skills[i].skill.requiredAnimal.ToString() + (skillManager.skills[i].skill.animalCount > 1 ? "multi" : string.Empty));
+            reqMessage = string.Format(reqMessage, skillManager.skills[i].animalCounter, skillManager.skills[i].skill.animalCount, animalName);
+
+            components.skillDescReq.GetComponent<TextMeshProUGUI>().text = reqMessage;
+        } else {
+            components.skillDescReq.GetComponent<TextMeshProUGUI>().text = "";
+        }
+        components.skillDescriptionBox.gameObject.SetActive(true);
     }
     #endregion
 
     #region Hud
-    public void OnSide() {
-        if (sideChanging)
-            return;
-
-        sideChanging = true;
-        StartCoroutine(Side());
-    }
-
-    IEnumerator Side() {
-        float timer = 0;
-        bool run = true;
-        while (run) {
-            timer += Time.deltaTime * (1 / sideAppearTime);
-            Vector3 newpos;
-            if (!sideOpen) {
-                newpos = Vector3.Lerp(localSizeOrigin, localSizeOrigin + new Vector3(220, 0, 0), timer);
-            }else {
-                newpos = Vector3.Lerp(localSizeOrigin + new Vector3(220, 0, 0), localSizeOrigin, timer);
-            }
-            components.buttonSide.localPosition = newpos;
-            if (timer >= 1) {
-                sideOpen = !sideOpen;
-                run = false;
-                sideChanging = false;
-            }
-            yield return new WaitForEndOfFrame();
-        }
-        yield return 0;
-    }
-
     public void UpdateHealthBar(float fill) {
         GetImage(components.imageHealthFill).fillAmount = fill;
     }
@@ -270,10 +262,17 @@ public class UIManager : MonoBehaviour {
         settings.SetGraphical();
         settings.SetAudio();
 
-        components.buttonGraphics.GetComponent<Toggle>().isOn = settings.graphicalSettings == Graphical.High;
+        //components.buttonGraphics.GetComponent<Toggle>().isOn = settings.graphicalSettings == Graphical.High;
         components.buttonAudio.GetComponent<Toggle>().isOn = settings.audioSettings == OnOff.On;
 
+        components.buttonGraphicsHigh.GetChild(0).GetComponent<Image>().enabled = settings.graphicalSettings == Graphical.High;
+        components.buttonGraphicsLow.GetChild(0).GetComponent<Image>().enabled = settings.graphicalSettings == Graphical.Low;
+
         settings.EnableSettings();
+    }
+
+    public void OnTutorial() {
+
     }
 
     public void OnToggleAudio(bool b) {
@@ -281,7 +280,21 @@ public class UIManager : MonoBehaviour {
     }
 
     public void OnToggleGraphical(bool b) {
+        if (settings.graphicalSettings == Graphical.High && b)
+            return;
+        if (settings.graphicalSettings == Graphical.Low && !b)
+            return;
+
         settings.OnToggleGraphical(b, unlocalizedGraphics);
+
+        if (!b) {
+            components.buttonGraphicsHigh.GetChild(0).GetComponent<Image>().enabled = settings.graphicalSettings == Graphical.High;
+            components.buttonGraphicsLow.GetChild(0).GetComponent<Image>().enabled = settings.graphicalSettings == Graphical.Low;
+        } 
+        else {
+            components.buttonGraphicsHigh.GetChild(0).GetComponent<Image>().enabled = settings.graphicalSettings == Graphical.High;
+            components.buttonGraphicsLow.GetChild(0).GetComponent<Image>().enabled = settings.graphicalSettings == Graphical.Low;
+        }
     }
 
     public void OnChangeLanguage(string lang) {

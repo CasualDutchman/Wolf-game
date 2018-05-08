@@ -3,7 +3,7 @@ guid: 843c0396f3b6a434fbd61b19b0dfa780
 timeCreated: 1522835578
 licenseType: Free
 ModelImporter:
-  serializedVersion: 21
+  serializedVersion: 22
   fileIDToRecycleName:
     100000: Armature
     100002: Cylinder.001
@@ -83,10 +83,17 @@ ModelImporter:
     7400008: fox/Jump Attack
     9500000: //RootNode
     13700000: Cylinder.001
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Material.001
+    second: {fileID: 2100000, guid: ac8099ddabc7143408f30b723cb57960, type: 2}
   materials:
     importMaterials: 1
     materialName: 0
     materialSearch: 1
+    materialLocation: 0
   animations:
     legacyGenerateAnimations: 4
     bakeSimulation: 0
@@ -99,6 +106,7 @@ ModelImporter:
     animationImportWarnings: 
     animationRetargetingWarnings: 
     animationDoRetargetingWarnings: 0
+    importAnimatedCustomProperties: 0
     animationCompression: 1
     animationRotationError: 0.5
     animationPositionError: 0.5
@@ -166,8 +174,8 @@ ModelImporter:
     - serializedVersion: 16
       name: fox/Running
       takeName: Armature|Animations
-      firstFrame: 1
-      lastFrame: 23
+      firstFrame: 0
+      lastFrame: 22
       wrapMode: 0
       orientationOffsetY: 0
       level: 0

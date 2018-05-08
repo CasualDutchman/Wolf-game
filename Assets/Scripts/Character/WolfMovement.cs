@@ -18,9 +18,9 @@ public class WolfMovement : MonoBehaviour {
 	}
 	
 	void Update () {
-        //Vector3 target = GroupMovement.instance.RelativePositionToWorld(id);
+        Vector3 target = GroupMovement.instance.RelativePositionToWorld(id);
         //velocity = (target - transform.position).normalized;
-        //transform.position = target;
+        transform.position = target;
 
         /*
         velocity = (target - transform.position).normalized;

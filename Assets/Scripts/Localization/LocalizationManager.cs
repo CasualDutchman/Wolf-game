@@ -47,7 +47,7 @@ public class LocalizationManager : MonoBehaviour {
     /// <returns>Localized value</returns>
     public string GetLocalizedValue(string key) {
         key = key.ToLower();
-        string result = "Missing Localized Info. key = " + key;
+        string result = key + " Missing";
 
         if (dictionary.ContainsKey(key)) {
             result = dictionary[key];
@@ -65,8 +65,18 @@ public class LocalizationManager : MonoBehaviour {
 
         TextAsset textass = Resources.Load("Languages/" + lang) as TextAsset;
 
-        if(textass != null) { 
-            string[] dataArray = textass.text.Split("\n"[0]);
+        if(textass != null) {
+            string content = textass.text;
+            if (content == "")
+                content = System.Text.Encoding.Default.GetString(textass.bytes);
+
+            string[] dataArray = content.Split("\n"[0]);
+
+            if (debugAll) {
+                Debug.Log(textass.text);
+                Debug.Log(dataArray.Length);
+                Debug.Log(dataArray[0]);
+            }
 
             foreach (string data in dataArray) {
                 if (data.StartsWith("/") || string.IsNullOrEmpty(data) || char.IsControl(data[0]))
@@ -79,9 +89,9 @@ public class LocalizationManager : MonoBehaviour {
                 }
             }
 
-            Debug.Log("Localized content loaded. Dictionary contains " + dictionary.Count + " entries");
+            Debug.Log(lang +" content loaded. Dictionary contains " + dictionary.Count + " entries");
         } else {
-            Debug.LogError(lang + ".txt does not excist in the StreamingAssets folder.");
+            Debug.LogError(lang + ".txt does not excist in the Resource folder.");
         }
 
         yield return 0; 
