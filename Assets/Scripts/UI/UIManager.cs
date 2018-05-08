@@ -3,16 +3,17 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
+using TMPro;
 
 public enum Screens { Hud, Settings, Alpha }
 
 [System.Serializable]
 public class SkillHolder {
     public Image skillRadial;
-    public Text skillName;
+    public TextMeshProUGUI skillName;
 }
 
-public class UIManager : MonoBehaviour {
+public class UIManager : MonoBehaviour { 
 
     Screens currentScreen = Screens.Hud;
 
@@ -34,6 +35,7 @@ public class UIManager : MonoBehaviour {
 
     [Header("HUD")]
     public string unlocalizedExperience;
+    public string unlocalizedLevel;
     public string unlocalizedAlpha;
     public float sideAppearTime = 1;
     bool sideOpen = false;
@@ -88,6 +90,7 @@ public class UIManager : MonoBehaviour {
     void RegisterTexts() {
         //HUD
         RegisterText(components.textExperience, unlocalizedExperience);
+        RegisterText(components.textLevel, unlocalizedLevel);
         RegisterButton(components.buttonSettings, () => ChangeScreen(Screens.Settings));
         RegisterButton(components.buttonSide, () => OnSide());
         RegisterButton(components.buttonAlpha, () => ChangeScreen(Screens.Alpha));
@@ -139,7 +142,7 @@ public class UIManager : MonoBehaviour {
     void RegisterSkill(Transform t, int i) {
         skillHolder[i] = new SkillHolder() {
             skillRadial = t.GetChild(1).GetComponent<Image>(),
-            skillName = t.GetChild(2).GetChild(0).GetComponent<Text>()
+            skillName = t.GetChild(2).GetChild(0).GetComponent<TextMeshProUGUI>()
         };
     }
 
@@ -151,8 +154,9 @@ public class UIManager : MonoBehaviour {
     }
 
     void UpdateText(string key, params object[] par) {
-        textRegistry[unlocalizedExperience].Change();
-        textRegistry[unlocalizedExperience].UpdateItem(par);
+        //textRegistry[unlocalizedExperience].UpdateItem(par);
+        textRegistry[key].Change();
+        textRegistry[key].UpdateItem(par);
     }
 
     public void OnChangeLanguagePref() {
@@ -165,10 +169,6 @@ public class UIManager : MonoBehaviour {
 
     public Image GetImage(Transform obj) {
         return obj.GetComponent<Image>();
-    }
-
-    public Text GetText(Transform obj) {
-        return obj.GetComponent<Text>();
     }
     #endregion
 
@@ -252,12 +252,13 @@ public class UIManager : MonoBehaviour {
         GetImage(components.imageFoodBarFill).fillAmount = fill;
     }
 
-    public void UpdateExperienceBar(float fill) {
-        GetImage(components.imageExperienceBarFill).fillAmount = fill;
+    public void UpdateExperienceBar(float currentXP, float maxXP) {
+        GetImage(components.imageExperienceBarFill).fillAmount = currentXP / maxXP;
+        UpdateText(unlocalizedExperience, currentXP.ToString("F0"), maxXP.ToString("F0"));
     }
 
     public void UpdateLevelText(int i) {
-        UpdateText(unlocalizedExperience, i);
+        UpdateText(unlocalizedLevel, i, "");
     }
     #endregion
 

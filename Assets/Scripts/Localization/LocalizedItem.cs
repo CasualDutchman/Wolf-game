@@ -2,25 +2,28 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
-[RequireComponent(typeof(Text))]
+[RequireComponent(typeof(TextMeshProUGUI))]
 public class LocalizedItem : MonoBehaviour {
 
-    Text _text;
+    TextMeshProUGUI _text;
     public string key;
     string value;
 
-    object[] pars;
+    public object[] pars;
 
     public void Register(string k) {
-        _text = GetComponent<Text>();
+        _text = GetComponent<TextMeshProUGUI>();
         key = k;
     }
 
     public void Change() {
         value = LocalizationManager.instance.GetLocalizedValue(key);
-        if (pars != null && pars.Length > 0)
+
+        if (pars != null && pars.Length > 0) {
             value = string.Format(value, pars);
+        }
         _text.text = value;
     }
 

@@ -1,5 +1,6 @@
 //Hud
-hudleveltext=Level: {0}
+hudleveltext={0}
+hudxptext={0}/{1}
 sidealpha=Alpha
 
 //Settings

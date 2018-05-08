@@ -14,7 +14,7 @@ public class WolfPack : MonoBehaviour {
     public float maxFood;
     public float attackDamage;
     public float attackSpeed;
-    public int level;
+    public int level = 1;
     public float experience;
     public int maxExperience;
 
@@ -89,7 +89,7 @@ public class WolfPack : MonoBehaviour {
     }
 
     public void UpdateExperienceTexts() {
-        uimanager.UpdateExperienceBar((float)experience / (float)maxExperience);
+        uimanager.UpdateExperienceBar(experience, maxExperience);
         uimanager.UpdateLevelText(level);
     }
 

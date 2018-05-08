@@ -14,6 +14,7 @@ public class UIComponents : MonoBehaviour {
     public Transform imageFoodBarFill;
     public Transform imageExperienceBarFill;
     public Transform textExperience;
+    public Transform textLevel;
     public Transform buttonStore;
     public Transform buttonSettings;
     public Transform buttonSide;
