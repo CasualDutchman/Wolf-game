@@ -1059,7 +1059,7 @@ MonoBehaviour:
   animalType: 1
   health: 0
   maxHealth: 50
-  maxSpeed: 3
+  maxSpeed: 5
   level: 1
   targetWolf: {fileID: 0}
   attackDamage: 7

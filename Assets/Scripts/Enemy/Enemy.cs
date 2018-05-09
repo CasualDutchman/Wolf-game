@@ -59,13 +59,16 @@ public class Enemy : MonoBehaviour {
 
         Vector3 dir = target - transform.position;
         velocity += dir.normalized * Time.deltaTime;
-        velocity = Vector3.ClampMagnitude(velocity, maxSpeed);
 
-        anim.SetFloat("Blend", velocity.magnitude / maxSpeed);
+        float dis = Vector3.Distance(target, transform.position);
+        float multiplier = dis > maxSpeed ? 1 : dis / maxSpeed;
+        velocity = Vector3.ClampMagnitude(velocity, maxSpeed * multiplier);
+
+        anim.SetFloat("Blend", velocity.magnitude / (maxSpeed - 1));
 
         //velocity = Vector3.ClampMagnitude(velocity, 1);
         //velocity = Vector3.ClampMagnitude(velocity * Time.deltaTime * maxSpeed, maxSpeed);
-        transform.position += velocity;
+        transform.position += velocity * Time.deltaTime;
 
         Vector3 look = velocity;
         look.y = 0;
