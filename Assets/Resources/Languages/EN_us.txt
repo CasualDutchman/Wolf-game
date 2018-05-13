@@ -6,8 +6,8 @@ sidealpha=Alpha
 //Settings
 settingstitle=Settings
 settinglanguage=Language
-settingtutorial=Tutorial
-settingtutorialstart=Start
+settingtutorial=Delete progress
+settingtutorialstart=Delete
 settinggraphical=Quality
 settingaudio=Sound
 settingaudioonoff=On/Off

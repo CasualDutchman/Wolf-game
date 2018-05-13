@@ -8,7 +8,7 @@ public class WolfPack : MonoBehaviour {
     UIManager uimanager;
 
     [Header("Wolf Attributes")]
-    public float health;
+    //public float health;
     public float maxhealth;
     public float food;
     public float maxFood;
@@ -24,13 +24,13 @@ public class WolfPack : MonoBehaviour {
 
     float foodTimer;
 
-    public bool atRestingPlace;
+    //public bool atRestingPlace;
 
     public string wolfBondCode, seasonedHunterCode, shareKnowledgeCode;
 
 	void Start () {
-        health = maxhealth;
-        food = maxFood;
+        //health = maxhealth;
+        //food = maxFood;
 
         uimanager = UIManager.instance;
 
@@ -42,7 +42,7 @@ public class WolfPack : MonoBehaviour {
 	
     public void Save() {
         string str = "";
-        str += health + "/";
+        //str += health + "/";
         str += food + "/";
         str += level + "/";
         str += experience;
@@ -54,10 +54,10 @@ public class WolfPack : MonoBehaviour {
         if (PlayerPrefs.HasKey("WolfPack")) {
             string str = PlayerPrefs.GetString("WolfPack");
             string[] data = str.Split('/');
-            health = float.Parse(data[0]);
-            food = float.Parse(data[1]);
-            level = int.Parse(data[2]);
-            experience = float.Parse(data[3]);
+            //health = float.Parse(data[0]);
+            food = float.Parse(data[0]);
+            level = int.Parse(data[1]);
+            experience = float.Parse(data[2]);
         }
     }
 
@@ -67,24 +67,24 @@ public class WolfPack : MonoBehaviour {
             foodTimer -= foodConsumptionInterval;
             food -= foodConsumption;
 
-            if (health < maxhealth && atRestingPlace) {
-                health += 5;
-            }
+            //if (health < maxhealth && atRestingPlace) {
+            //    health += 5;
+            //}
 
             Updatebars();
         }
 
-        if (health < maxhealth) {
-            foodConsumption = atRestingPlace ? 4.5f : 0.3f;
-            foodConsumptionInterval = atRestingPlace ? 1f : 1.7f;
-        } else {
-            foodConsumption = 0.1f;
-            foodConsumptionInterval = atRestingPlace ? 5f : 3f;
-        }
+        //if (health < maxhealth) {
+        //    foodConsumption = atRestingPlace ? 4.5f : 0.3f;
+        //    foodConsumptionInterval = atRestingPlace ? 1f : 1.7f;
+        //} else {
+        //    foodConsumption = 0.1f;
+        //    foodConsumptionInterval = atRestingPlace ? 5f : 3f;
+        //}
 	}
 
     public void Updatebars() {
-        uimanager.UpdateHealthBar(health / maxhealth);
+        //uimanager.UpdateHealthBar(health / maxhealth);
         uimanager.UpdateFoodBar(food / maxFood);
     }
 
@@ -98,7 +98,7 @@ public class WolfPack : MonoBehaviour {
             if (animalLevel < level)
                 return;
 
-        health -= amount - (SkillManager.instance.IsSkillActive(wolfBondCode) ? 5 : 0);
+        //health -= amount - (SkillManager.instance.IsSkillActive(wolfBondCode) ? 5 : 0);
 
         Updatebars();
     }

@@ -6,8 +6,8 @@ sidealpha=Alpha
 //Settings
 settingstitle=Instellingen
 settinglanguage=Taal
-settingtutorial=Lessen
-settingtutorialstart=Start
+settingtutorial=Verwijder data
+settingtutorialstart=Verwijder
 settinggraphical=Kwaliteit
 settingaudio=Audio
 settingaudioonoff=Aan/Uit

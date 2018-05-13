@@ -12,7 +12,7 @@ public interface IManager {
 
     void Spawn(Vector3 pos);
 
-    Object FromPosition(Vector3 pos, float radius);
+    Object[] FromPosition(Vector3 pos, float radius);
 
     void RemoveAtChunk(Vector2 chunkPos);
 

@@ -19,12 +19,12 @@ public class GroupMovement : MonoBehaviour {
     [HideInInspector]
     public List<Transform> wolves;
 
-    Enemy attackingEnemy;
-
     public int amountOfWolves;
 
+    public bool isAttacking = false;
+
     float timer;
-    float attackTimer;
+    //float attackTimer;
     float repositionTimer;
     bool reposition;
 
@@ -65,8 +65,14 @@ public class GroupMovement : MonoBehaviour {
             //newRelativePositions[i] = oldRelativePositions[i];
 
             GameObject go = Instantiate(wolfPrefab, RelativePositionToWorld(i), Quaternion.identity);
-            go.GetComponent<WolfMovement>().id = i;
-            go.GetComponent<WolfMovement>().maxSpeed = maxSpeed;
+            WolfMovement wm = go.GetComponent<WolfMovement>();
+            wm.id = i;
+            wm.maxSpeed = maxSpeed;
+            wm.health = wolfPack.maxhealth;
+            wm.maxHealth = wolfPack.maxhealth;
+            wm.groupMovement = this;
+            wm.attackDamage = wolfPack.attackDamage;
+            wm.attackSpeed = wolfPack.attackSpeed;
 
             wolves.Add(go.transform);
 
@@ -97,6 +103,8 @@ public class GroupMovement : MonoBehaviour {
                 for (int i = 0; i < wolves.Count; i++) {
                     wolves[i].GetComponent<WolfMovement>().velocity = new Vector3(dir.x, 0, dir.y);
                 }
+
+                knob.transform.localEulerAngles = new Vector3(0, 0, -Quaternion.LookRotation(new Vector3(dir.x, 0, dir.y)).eulerAngles.y);
             }
 
             if (Input.GetMouseButtonUp(0) && !uiHit) {
@@ -136,8 +144,11 @@ public class GroupMovement : MonoBehaviour {
         if (timer > 10) {
             timer -= 10;
             for (int i = 0; i < amountOfWolves; i++) {
-                Vector2 v2 = Random.insideUnitCircle * 3;
+                Vector2 v2 = Random.insideUnitCircle * 3f;
                 newRelativePositions[i] = new Vector3(v2.x, 0, v2.y);
+                if (isAttacking) {
+                    newRelativePositions[i] = newRelativePositions[i].normalized * 3f;
+                }
                 reposition = true;
             }
         }
@@ -164,6 +175,7 @@ public class GroupMovement : MonoBehaviour {
             }
         }
 
+        /*
         if (EnemyManager.instance != null) {
             Enemy enemy = (Enemy)EnemyManager.instance.FromPosition(centerOfWolves, 5);
 
@@ -171,7 +183,7 @@ public class GroupMovement : MonoBehaviour {
                 enemy.targetWolf = transform;
                 attackingEnemy = enemy;
             }
-        }
+        }*
 
         if (attackingEnemy != null) {
             attackTimer += Time.deltaTime;
@@ -181,7 +193,7 @@ public class GroupMovement : MonoBehaviour {
                     attackingEnemy = null;
                 }
             }
-        }
+        }*/
 
         centerOfWolves = new Vector3();
         foreach (var item in wolves) {
@@ -190,11 +202,25 @@ public class GroupMovement : MonoBehaviour {
         centerOfWolves /= wolves.Count;
         cameraRig.position = Vector3.Lerp(cameraRig.position, centerOfWolves, 0.7f);
 
-        wolfPack.atRestingPlace = (Transform)RestingManager.instance.FromPosition(centerOfWolves, 3) != null;
+        //wolfPack.atRestingPlace = ((Transform[])RestingManager.instance.FromPosition(centerOfWolves, 3)).Length > 0;
     }
 
     public void Attack(float damage, int level) {
         wolfPack.Damage(damage, level);
+    }
+
+    public void UpdateHealthBar() {
+        float max = 0;
+        float current = 0;
+        foreach (Transform item in wolves) {
+            WolfMovement wolf = item.GetComponent<WolfMovement>();
+            max += wolf.maxHealth;
+            current += wolf.health;
+        }
+        max /= (float)wolves.Count;
+        current /= (float)wolves.Count;
+
+        uiManager.UpdateHealthBar(current / max);
     }
 
     public void AddFood(float amount) {

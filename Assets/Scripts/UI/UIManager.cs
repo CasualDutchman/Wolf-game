@@ -120,6 +120,7 @@ public class UIManager : MonoBehaviour {
         RegisterButton(components.buttonDutch, () => OnChangeLanguage("NL_nl"));
         RegisterButton(components.buttonGraphicsHigh, () => OnToggleGraphical(true));
         RegisterButton(components.buttonGraphicsLow, () => OnToggleGraphical(false));
+        RegisterButton(components.buttonQuitDelete, () => DeleteAndQuit());
     }
 
     public bool IsHittingUI() {
